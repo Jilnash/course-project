@@ -28,7 +28,6 @@ public class Role implements GrantedAuthority {
     @UpdateTimestamp
     private Date updatedAt;
 
-
     @Override
     public String getAuthority() {
         return getName();

@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "time_range")
+@Table(name = "timerange")
 public class TimeRange {
 
     @Id

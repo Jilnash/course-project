@@ -1,0 +1,24 @@
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/course_project
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+#    hibernate:
+#      ddl-auto: update
+    show-sql: true
+  servlet:
+    multipart:
+      max-request-size: 100MB
+      max-file-size: 100MB
+  security:
+    user:
+      name: user
+      password: root
+
+jwt:
+    secret: secret
+    expiration: 1h
+
+#spring.jackson.serialization.fail-on-empty-beans:false

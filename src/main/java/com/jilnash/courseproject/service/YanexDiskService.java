@@ -98,7 +98,6 @@ public class YanexDiskService {
         Gson gson = new Gson();
 
         // Parse JSON string to Map<String, String>
-        return gson.fromJson(body, new TypeToken<Map<String, String>>() {
-        }.getType());
+        return gson.fromJson(body, new TypeToken<Map<String, String>>() {}.getType());
     }
 }
