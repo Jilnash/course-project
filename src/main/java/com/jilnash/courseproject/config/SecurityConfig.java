@@ -38,9 +38,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers("/users/signup", "users/login").permitAll()
-                                .requestMatchers("/test/admin").hasAuthority("ADMIN")
-                                .requestMatchers("/test/student").hasAnyAuthority("STUDENT")
-                                .requestMatchers("/test/teacher").hasAuthority("TEACHER")
+                                .requestMatchers("/homework").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->

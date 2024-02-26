@@ -1,10 +1,7 @@
 package com.jilnash.courseproject.controller;
 
-import com.jilnash.courseproject.dto.LoginFormDTO;
-import com.jilnash.courseproject.dto.RegisterFormDTO;
 import com.jilnash.courseproject.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,15 +11,18 @@ public class UserController {
     @Autowired
     AuthService authService;
 
-    @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginFormDTO loginFormDTO) {
-
-        return authService.createToken(loginFormDTO);
+    @GetMapping
+    public String getUsers() {
+        return "Users";
     }
 
-    @PutMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody RegisterFormDTO registerFormDTO) {
+    @GetMapping("{id}")
+    public String getUser(@PathVariable Long id) {
+        return "User: " + id;
+    }
 
-        return authService.createUser(registerFormDTO);
+    @PatchMapping("{id}")
+    public String updateUser(@PathVariable Long id) {
+        return "User: " + id;
     }
 }

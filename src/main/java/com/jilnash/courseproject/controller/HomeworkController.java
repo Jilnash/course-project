@@ -7,7 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("hw")
+@RequestMapping("homework")
 public class HomeworkController {
 
     @GetMapping
