@@ -38,9 +38,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize ->
                         authorize
                                 .requestMatchers("/users/signup", "users/login").permitAll()
-//                                .requestMatchers("/test/admin").hasRole("ADMIN") // TODO: solve role issues
-//                                .requestMatchers("/test/student").hasRole("STUDENT")
-//                                .requestMatchers("/test/teacher").hasRole("TEACHER")
+                                .requestMatchers("/test/admin").hasAuthority("ADMIN")
+                                .requestMatchers("/test/student").hasAnyAuthority("STUDENT")
+                                .requestMatchers("/test/teacher").hasAuthority("TEACHER")
                                 .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
