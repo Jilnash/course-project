@@ -1,6 +1,6 @@
 package com.jilnash.courseproject.service;
 
-import com.jilnash.courseproject.dto.RegisterFormDTO;
+import com.jilnash.courseproject.dto.auth.RegisterFormDTO;
 import com.jilnash.courseproject.model.participants.User;
 import com.jilnash.courseproject.repo.RoleRepo;
 import com.jilnash.courseproject.repo.UserRepo;

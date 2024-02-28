@@ -64,7 +64,6 @@ public class YanexDiskService {
     public static String getFileFromDisk(String path) {
 
         String link = getDownloadRequestLink(path);
-        System.out.println(link);
 
 //        RestTemplate restTemplate = new RestTemplate();
 //

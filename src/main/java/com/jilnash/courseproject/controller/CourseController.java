@@ -1,5 +1,7 @@
 package com.jilnash.courseproject.controller;
 
+import com.jilnash.courseproject.dto.education.CourseDTO;
+import com.jilnash.courseproject.dto.education.TaskDTO;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -12,7 +14,8 @@ public class CourseController {
     }
 
     @PutMapping
-    public String createCourse() {
+    public String createCourse(@RequestBody CourseDTO courseDTO) {
+        System.out.println(courseDTO);
         return "Course created";
     }
 
@@ -21,8 +24,10 @@ public class CourseController {
         return "Course " + id;
     }
 
-    @PostMapping("/{id}")
-    public String updateCourse(@PathVariable Long id) {
+    @PatchMapping("/{id}")
+    public String updateCourse(@PathVariable Long id,
+                               @RequestBody CourseDTO courseDTO) {
+        System.out.println(courseDTO);
         return "Course " + id + " updated";
     }
 
@@ -37,17 +42,23 @@ public class CourseController {
     }
 
     @PutMapping("/{id}/tasks")
-    public String createTaskInCourse(@PathVariable Long id) {
+    public String createTaskInCourse(@PathVariable Long id,
+                                     @RequestBody TaskDTO taskDTO) {
+        System.out.println(taskDTO);
         return "Task for course " + id + " created";
     }
 
     @GetMapping("/{id}/tasks/{taskId}")
-    public String getTaskInCourse(@PathVariable Long id, @PathVariable Long taskId) {
+    public String getTaskInCourse(@PathVariable Long id,
+                                  @PathVariable Long taskId) {
         return "Task " + taskId + " for course " + id;
     }
 
-    @PostMapping("/{id}/tasks/{taskId}")
-    public String updateTaskInCourse(@PathVariable Long id, @PathVariable Long taskId) {
+    @PatchMapping("/{id}/tasks/{taskId}")
+    public String updateTaskInCourse(@PathVariable Long id,
+                                     @PathVariable Long taskId,
+                                     @RequestBody TaskDTO taskDTO) {
+        System.out.println(taskDTO);
         return "Task " + taskId + " for course " + id + " updated";
     }
 }

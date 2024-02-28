@@ -1,5 +1,6 @@
 package com.jilnash.courseproject.model.education;
 
+import com.jilnash.courseproject.model.participants.Admin;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -21,6 +22,12 @@ public class Course {
     private String description;
 
     private String duration;
+
+    @ManyToOne
+    private Admin createdBy;
+
+    @ManyToOne
+    private Admin updatedBy;
 
     @Column(name = "created_at")
     @CreationTimestamp

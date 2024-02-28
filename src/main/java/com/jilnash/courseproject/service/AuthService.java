@@ -1,7 +1,7 @@
 package com.jilnash.courseproject.service;
 
-import com.jilnash.courseproject.dto.LoginFormDTO;
-import com.jilnash.courseproject.dto.RegisterFormDTO;
+import com.jilnash.courseproject.dto.auth.LoginFormDTO;
+import com.jilnash.courseproject.dto.auth.RegisterFormDTO;
 import com.jilnash.courseproject.model.participants.User;
 import com.jilnash.courseproject.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;

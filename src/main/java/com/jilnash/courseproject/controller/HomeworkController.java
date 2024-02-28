@@ -8,6 +8,7 @@ import java.io.IOException;
 
 @RestController
 @RequestMapping("homework")
+@CrossOrigin(origins = "http://localhost:5173")
 public class HomeworkController {
 
     @GetMapping

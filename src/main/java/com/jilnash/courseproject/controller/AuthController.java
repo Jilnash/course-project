@@ -1,7 +1,7 @@
 package com.jilnash.courseproject.controller;
 
-import com.jilnash.courseproject.dto.LoginFormDTO;
-import com.jilnash.courseproject.dto.RegisterFormDTO;
+import com.jilnash.courseproject.dto.auth.LoginFormDTO;
+import com.jilnash.courseproject.dto.auth.RegisterFormDTO;
 import com.jilnash.courseproject.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

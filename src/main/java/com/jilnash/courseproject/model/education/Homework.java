@@ -35,5 +35,5 @@ public class Homework {
 
     @Column(name = "updated_at")
     @UpdateTimestamp
-    private Date updatededAt;
+    private Date updatedAt;
 }

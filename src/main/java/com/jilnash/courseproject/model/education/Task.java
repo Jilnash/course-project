@@ -1,6 +1,6 @@
 package com.jilnash.courseproject.model.education;
 
-import com.jilnash.courseproject.model.participants.Teacher;
+import com.jilnash.courseproject.model.participants.Admin;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -19,7 +19,10 @@ public class Task {
     private Long id;
 
     @ManyToOne
-    private Teacher teacher;
+    private Admin createdBy;
+
+    @ManyToOne
+    private Admin lastUpdatedBy;
 
     @ManyToOne
     private Course course;

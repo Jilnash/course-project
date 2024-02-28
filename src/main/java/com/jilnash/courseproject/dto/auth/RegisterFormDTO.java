@@ -1,4 +1,4 @@
-package com.jilnash.courseproject.dto;
+package com.jilnash.courseproject.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -6,7 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class RegisterFormDTO {
-
     private String login;
     private String email;
     private String phone;
