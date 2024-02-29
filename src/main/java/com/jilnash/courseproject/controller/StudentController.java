@@ -1,6 +1,7 @@
 package com.jilnash.courseproject.controller;
 
-import com.jilnash.courseproject.dto.participants.StudentDTO;
+import com.jilnash.courseproject.dto.request.participants.StudentDTO;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -13,7 +14,7 @@ public class StudentController {
     }
 
     @PutMapping
-    public boolean createStudent(@RequestBody StudentDTO studentDTO) {
+    public boolean createStudent(@Valid @RequestBody StudentDTO studentDTO) {
         System.out.println(studentDTO);
         return true;
     }
@@ -25,7 +26,7 @@ public class StudentController {
 
     @PatchMapping("{id}")
     public boolean updateStudent(@PathVariable Long id,
-                                 @RequestBody StudentDTO studentDTO) {
+                                 @Valid @RequestBody StudentDTO studentDTO) {
         System.out.println(studentDTO);
         return true;
     }

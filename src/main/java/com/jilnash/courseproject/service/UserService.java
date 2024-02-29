@@ -1,6 +1,6 @@
 package com.jilnash.courseproject.service;
 
-import com.jilnash.courseproject.dto.auth.RegisterFormDTO;
+import com.jilnash.courseproject.dto.request.auth.RegisterFormDTO;
 import com.jilnash.courseproject.model.participants.User;
 import com.jilnash.courseproject.repo.RoleRepo;
 import com.jilnash.courseproject.repo.UserRepo;
@@ -50,7 +50,8 @@ public class UserService implements UserDetailsService {
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        User user = userRepo.findByLogin(username)
+        User user = userRepo
+                .findByLogin(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         return new org.springframework.security.core.userdetails.User(

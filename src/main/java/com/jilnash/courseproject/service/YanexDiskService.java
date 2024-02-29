@@ -2,6 +2,7 @@ package com.jilnash.courseproject.service;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
@@ -18,7 +19,8 @@ import java.util.Map;
 @Service
 public class YanexDiskService {
 
-    private static String authToken = "y0_AgAAAAAkLYXfAAsTZwAAAAD28-CO6IKwXK0JQc63rvJHvmJ90HZjHBA";
+    @Value("${yandex.disk.auth.token}")
+    private static String authToken;
     private static String uploadURL = "https://cloud-api.yandex.net/v1/disk/resources/upload?path=%s&overwrite=true";
     private static String downloadURL = "https://cloud-api.yandex.net/v1/disk/resources/download?path=%s";
 

@@ -1,7 +1,8 @@
 package com.jilnash.courseproject.service;
 
-import com.jilnash.courseproject.dto.auth.LoginFormDTO;
-import com.jilnash.courseproject.dto.auth.RegisterFormDTO;
+import com.jilnash.courseproject.dto.response.AppException;
+import com.jilnash.courseproject.dto.request.auth.LoginFormDTO;
+import com.jilnash.courseproject.dto.request.auth.RegisterFormDTO;
 import com.jilnash.courseproject.model.participants.User;
 import com.jilnash.courseproject.utils.JwtUtils;
 import lombok.RequiredArgsConstructor;
@@ -31,10 +32,14 @@ public class AuthService {
 
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(form.getUsername(), form.getPassword())
+                    new UsernamePasswordAuthenticationToken(form.getUsername(), form.getPassword()
+                    )
             );
         } catch (BadCredentialsException e) {
-            return new ResponseEntity<>("Incorrect username or password", HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>(
+                    new AppException("Incorrect username or password", HttpStatus.UNAUTHORIZED.value()),
+                    HttpStatus.UNAUTHORIZED
+            );
         }
 
         UserDetails user = userService.loadUserByUsername(form.getUsername());

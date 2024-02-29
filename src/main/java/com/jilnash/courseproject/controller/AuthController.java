@@ -1,8 +1,9 @@
 package com.jilnash.courseproject.controller;
 
-import com.jilnash.courseproject.dto.auth.LoginFormDTO;
-import com.jilnash.courseproject.dto.auth.RegisterFormDTO;
+import com.jilnash.courseproject.dto.request.auth.LoginFormDTO;
+import com.jilnash.courseproject.dto.request.auth.RegisterFormDTO;
 import com.jilnash.courseproject.service.AuthService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,13 +16,13 @@ public class AuthController {
     AuthService authService;
 
     @PostMapping("/signin")
-    public ResponseEntity<?> login(@RequestBody LoginFormDTO loginFormDTO) {
+    public ResponseEntity<?> login(@Valid @RequestBody LoginFormDTO loginFormDTO) {
 
         return authService.createToken(loginFormDTO);
     }
 
     @PutMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody RegisterFormDTO registerFormDTO) {
+    public ResponseEntity<?> signup(@Valid @RequestBody RegisterFormDTO registerFormDTO) {
 
         return authService.createUser(registerFormDTO);
     }

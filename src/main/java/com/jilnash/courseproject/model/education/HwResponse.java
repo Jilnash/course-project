@@ -21,7 +21,7 @@ public class HwResponse {
     private Teacher teacher;
 
     @ManyToOne
-    private Task task;
+    private Homework homework;
 
     @Column(name = "created_at")
     @CreationTimestamp

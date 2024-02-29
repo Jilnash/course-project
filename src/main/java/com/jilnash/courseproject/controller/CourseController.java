@@ -1,7 +1,8 @@
 package com.jilnash.courseproject.controller;
 
-import com.jilnash.courseproject.dto.education.CourseDTO;
-import com.jilnash.courseproject.dto.education.TaskDTO;
+import com.jilnash.courseproject.dto.request.education.CourseDTO;
+import com.jilnash.courseproject.dto.request.education.TaskDTO;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,7 +15,7 @@ public class CourseController {
     }
 
     @PutMapping
-    public String createCourse(@RequestBody CourseDTO courseDTO) {
+    public String createCourse(@Valid @RequestBody CourseDTO courseDTO) {
         System.out.println(courseDTO);
         return "Course created";
     }
@@ -26,7 +27,7 @@ public class CourseController {
 
     @PatchMapping("/{id}")
     public String updateCourse(@PathVariable Long id,
-                               @RequestBody CourseDTO courseDTO) {
+                               @Valid @RequestBody CourseDTO courseDTO) {
         System.out.println(courseDTO);
         return "Course " + id + " updated";
     }
@@ -43,7 +44,7 @@ public class CourseController {
 
     @PutMapping("/{id}/tasks")
     public String createTaskInCourse(@PathVariable Long id,
-                                     @RequestBody TaskDTO taskDTO) {
+                                     @Valid @RequestBody TaskDTO taskDTO) {
         System.out.println(taskDTO);
         return "Task for course " + id + " created";
     }
