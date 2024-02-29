@@ -1,5 +1,6 @@
 package com.jilnash.courseproject.service;
 
+import com.jilnash.courseproject.dto.request.auth.PasswordChangeDTO;
 import com.jilnash.courseproject.dto.request.auth.RegisterFormDTO;
 import com.jilnash.courseproject.model.participants.User;
 import com.jilnash.courseproject.repo.RoleRepo;
@@ -44,6 +45,22 @@ public class UserService implements UserDetailsService {
         user.setRoles(List.of(roleRepo.findByName("STUDENT")));
 
         return userRepo.save(user);
+    }
+
+    public void changePassword(Long id, PasswordChangeDTO passwordChangeDTO) {
+
+        User user = userRepo
+                .findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        if (!encoder.matches(passwordChangeDTO.getOldPassword(), user.getPassword()))
+            throw new IllegalArgumentException("Old password is incorrect");
+
+        if (encoder.matches(passwordChangeDTO.getNewPassword(), user.getPassword()))
+            throw new IllegalArgumentException("New password must be different from the old one");
+
+        user.setPassword(encoder.encode(passwordChangeDTO.getNewPassword()));
+        userRepo.save(user);
     }
 
     @Override

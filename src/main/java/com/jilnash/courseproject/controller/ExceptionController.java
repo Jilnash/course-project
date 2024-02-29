@@ -18,4 +18,13 @@ public class ExceptionController {
                         HttpStatus.BAD_REQUEST.value())
         );
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<?> handleIllegalArgumentException(IllegalArgumentException ex) {
+        return ResponseEntity.badRequest().body(
+                new AppException(
+                        ex.getMessage(),
+                        HttpStatus.BAD_REQUEST.value())
+        );
+    }
 }
