@@ -2,6 +2,7 @@ package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.auth.PasswordChangeDTO;
 import com.jilnash.courseproject.dto.request.auth.RegisterFormDTO;
+import com.jilnash.courseproject.dto.request.participants.UserDTO;
 import com.jilnash.courseproject.model.participants.User;
 import com.jilnash.courseproject.repo.RoleRepo;
 import com.jilnash.courseproject.repo.UserRepo;
@@ -47,7 +48,48 @@ public class UserService implements UserDetailsService {
         return userRepo.save(user);
     }
 
-    public void changePassword(Long id, PasswordChangeDTO passwordChangeDTO) {
+    public User getUserById(Long id) {
+        return userRepo
+                .findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+    }
+
+    public List<User> getUsers() {
+        return userRepo.findAll();
+    }
+
+    public boolean updateUser(Long id, UserDTO userDTO) {
+
+        User user = userRepo
+                .findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        userRepo.findByLogin(userDTO.getLogin())
+                .ifPresent(u -> {
+                    if (!u.getId().equals(id))
+                        throw new IllegalArgumentException("User with this login already exists");
+                });
+
+        userRepo.findByEmail(userDTO.getEmail())
+                .ifPresent(u -> {
+                    if (!u.getId().equals(id))
+                        throw new IllegalArgumentException("User with this email already exists");
+                });
+
+        userRepo.findByPhone(userDTO.getPhone())
+                .ifPresent(u -> {
+                    if (!u.getId().equals(id))
+                        throw new IllegalArgumentException("User with this phone already exists");
+                });
+
+        user.setLogin(userDTO.getLogin());
+        user.setEmail(userDTO.getEmail());
+        user.setPhone(userDTO.getPhone());
+
+        return userRepo.save(user) != null;
+    }
+
+    public boolean changePassword(Long id, PasswordChangeDTO passwordChangeDTO) {
 
         User user = userRepo
                 .findById(id)
@@ -60,7 +102,8 @@ public class UserService implements UserDetailsService {
             throw new IllegalArgumentException("New password must be different from the old one");
 
         user.setPassword(encoder.encode(passwordChangeDTO.getNewPassword()));
-        userRepo.save(user);
+
+        return userRepo.save(user) != null;
     }
 
     @Override
