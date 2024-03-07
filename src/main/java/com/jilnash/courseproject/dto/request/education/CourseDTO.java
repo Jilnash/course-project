@@ -25,6 +25,6 @@ public class CourseDTO {
 
     @NotNull(message = "Description must not be null")
     @NotBlank(message = "Description must not be empty")
-    @Size(min = 50, message = "Description must be at least 10 characters long")
+    @Size(min = 10, message = "Description must be at least 10 characters long")
     private String description;
 }

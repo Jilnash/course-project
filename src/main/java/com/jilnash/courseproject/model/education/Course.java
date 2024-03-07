@@ -7,10 +7,11 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.List;
 
 @Data
 @Entity
-@Table(name = "")
+@Table(name = "course")
 public class Course {
 
     @Id
@@ -28,6 +29,9 @@ public class Course {
 
     @ManyToOne
     private Admin updatedBy;
+
+    @OneToMany(mappedBy = "course")
+    private List<Task> tasks;
 
     @Column(name = "created_at")
     @CreationTimestamp

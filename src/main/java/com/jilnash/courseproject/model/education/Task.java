@@ -1,5 +1,6 @@
 package com.jilnash.courseproject.model.education;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jilnash.courseproject.model.participants.Admin;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class Task {
     private Admin lastUpdatedBy;
 
     @ManyToOne
+    @JsonIgnore
     private Course course;
 
     private String description;

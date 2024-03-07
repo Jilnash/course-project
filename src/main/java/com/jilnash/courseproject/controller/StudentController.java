@@ -60,4 +60,15 @@ public class StudentController {
                 )
         );
     }
+
+    @PostMapping("/{id}/purchase/{courseId}")
+    public ResponseEntity<?> purchaseCourse(@PathVariable Long id, @PathVariable Long courseId) {
+        return ResponseEntity.ok(
+                new AppResponse(
+                        "Course purchased successfully",
+                        200,
+                        studentService.purchaseCourse(id, courseId)
+                )
+        );
+    }
 }
