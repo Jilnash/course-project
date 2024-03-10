@@ -1,35 +1,65 @@
 package com.jilnash.courseproject.controller;
 
+import com.jilnash.courseproject.dto.request.education.HomeworkDTO;
 import com.jilnash.courseproject.dto.request.education.HwResponseDTO;
+import com.jilnash.courseproject.dto.response.AppResponse;
 import com.jilnash.courseproject.service.HomeworkService;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
-
 @RestController
 @RequestMapping("homeworks")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "*")
 public class HomeworkController {
 
-    @GetMapping
-    public String getHomeworks(@RequestParam String path) {
+    @Autowired
+    private HomeworkService homeworkService;
 
-        return HomeworkService.getStudentHomework(path);
+    @GetMapping
+    public ResponseEntity<?> getHomeworks() {
+
+        return ResponseEntity.ok(
+                new AppResponse(
+                        "List of homeworks",
+                        200,
+                        homeworkService.getHomeworks()
+                )
+        );
     }
 
     @PutMapping
-    public void createHomework(@ModelAttribute("video") MultipartFile video,
-                               @ModelAttribute("audio") MultipartFile audio) throws IOException {
+    public ResponseEntity<?> createHomework(@RequestParam("studentId") Long studentId,
+                                            @RequestParam("taskId") Long taskId,
+                                            @RequestParam("audio") MultipartFile audio,
+                                            @RequestParam("video") MultipartFile video) throws Exception {
+        @Valid
+        HomeworkDTO homeworkDTO = new HomeworkDTO(studentId, taskId, audio, video);
 
-        HomeworkService.createHomework(audio, video);
+        return ResponseEntity.ok(
+                new AppResponse(
+                        "Homework created successfully",
+                        200,
+                        homeworkService.createHomework(homeworkDTO)
+                )
+        );
     }
 
-    @GetMapping("{id}")
-    public String getHomework(@PathVariable Long id) {
+    @GetMapping(
+            value = "{id}",
+            produces = MediaType.APPLICATION_OCTET_STREAM_VALUE
+    )
+    public ResponseEntity<?> getHomework(@PathVariable Long id) throws Exception {
 
-        return "Homework " + id;
+        return ResponseEntity
+                .ok()
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"audio.mpeg\"")
+                .body(homeworkService.getHomeworkById(id).getContentAsByteArray());
     }
 
     @PutMapping("{id}/responses")
@@ -45,6 +75,6 @@ public class HomeworkController {
     public String getResponseOfHomework(@PathVariable Long id,
                                         @PathVariable Long responseId) {
 
-        return "Response " + responseId +" of homework " + id;
+        return "Response " + responseId + " of homework " + id;
     }
 }

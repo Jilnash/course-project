@@ -2,9 +2,7 @@ package com.jilnash.courseproject.service;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -13,50 +11,43 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.Map;
 
 @Service
-public class YanexDiskService {
+public class YandexDiskService {
 
-    @Value("${yandex.disk.auth.token}")
-    private static String authToken;
-    private static String uploadURL = "https://cloud-api.yandex.net/v1/disk/resources/upload?path=%s&overwrite=true";
-    private static String downloadURL = "https://cloud-api.yandex.net/v1/disk/resources/download?path=%s";
+    private static final String authToken = "y0_AgAAAAAkLYXfAAsTZwAAAAD28-CO6IKwXK0JQc63rvJHvmJ90HZjHBA";
+    private static final String uploadURL = "https://cloud-api.yandex.net/v1/disk/resources/upload?path=%s&overwrite=true";
+    private static final String downloadURL = "https://cloud-api.yandex.net/v1/disk/resources/download?path=%s";
 
-    public static void putFileToDisk(MultipartFile file) throws IOException {
+    public static void putFileToDisk(MultipartFile file, String path) {
 
-        String link = getUploadRequestLink(file);
+        String link = getUploadRequestLink(path);
 
         RestTemplate restTemplate = new RestTemplate();
 
-        ByteArrayResource resource = new ByteArrayResource(file.getBytes()) {
-            @Override
-            public String getFilename() {
-                return file.getOriginalFilename();
-            }
-        };
-
-        HttpEntity<ByteArrayResource> requestEntity = new HttpEntity<>(resource);
-
-        restTemplate.exchange(link, HttpMethod.PUT, requestEntity, String.class);
+        restTemplate.exchange(
+                link,
+                HttpMethod.PUT,
+                new HttpEntity<>(file.getResource()),
+                String.class
+        );
     }
 
-    private static String getUploadRequestLink(MultipartFile multipartFile) {
+    private static String getUploadRequestLink(String path) {
 
-        String requestUrl = String.format(uploadURL, multipartFile.getOriginalFilename());
+        String requestUrl = String.format(uploadURL, path);
 
         HttpHeaders headers = new HttpHeaders();
 
         headers.add("Authorization", authToken);
-        HttpEntity<String> entity = new HttpEntity<>(headers);
 
         RestTemplate restTemplate = new RestTemplate();
 
         ResponseEntity<String> response = restTemplate.exchange(
                 requestUrl,
                 HttpMethod.GET,
-                entity,
+                new HttpEntity<>(headers),
                 String.class
         );
 
@@ -64,14 +55,24 @@ public class YanexDiskService {
     }
 
     public static String getFileFromDisk(String path) {
-
         String link = getDownloadRequestLink(path);
 
+        return link;
 //        RestTemplate restTemplate = new RestTemplate();
 //
-//        restTemplate.getForEntity(link, String.class) ;
-
-        return link;
+//        try {
+//            ResponseEntity<Resource> response = restTemplate.exchange(
+//                    link,
+//                    HttpMethod.GET,
+//                    null,
+//                    new ParameterizedTypeReference<Resource>() {
+//                    }
+//            );
+//            return response.getBody();
+//
+//        } catch (Exception e) {
+//            throw new UsernameNotFoundException("File request failed");
+//        }
     }
 
     private static String getDownloadRequestLink(String path) {

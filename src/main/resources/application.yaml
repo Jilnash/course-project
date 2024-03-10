@@ -18,11 +18,13 @@ spring:
       password: root
 
 jwt:
-    secret: secret
-    expiration: 1h
+  secret: secret
+  expiration: 1h
+
+amazon:
+  aws:
+    access-key: <???>
+    secret-key: <???>
+    region: us-east-1
 
 #spring.jackson.serialization.fail-on-empty-beans:false
-
-yandex:
-  disk:
-    token: y0_AgAAAAAkLYXfAAsTZwAAAAD28-CO6IKwXK0JQc63rvJHvmJ90HZjHBA

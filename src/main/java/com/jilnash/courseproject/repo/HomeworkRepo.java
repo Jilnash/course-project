@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface HomeworkRepo extends JpaRepository<Homework, Long> {
+
+    Integer countByStudentIdAndTaskId(Long studentId, Long taskId);
 }

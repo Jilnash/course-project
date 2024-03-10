@@ -41,6 +41,12 @@ public class TaskService {
         return taskRepo.save(task);
     }
 
+    public Task getTask(Long id) {
+        return taskRepo
+                .findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("Task not found"));
+    }
+
     public boolean updateTask(Long id, TaskDTO taskDTO) {
 
         Task task = taskRepo
