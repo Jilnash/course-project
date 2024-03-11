@@ -1,9 +1,7 @@
 package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.education.HomeworkDTO;
-import com.jilnash.courseproject.dto.request.education.HwResponseDTO;
 import com.jilnash.courseproject.model.education.Homework;
-import com.jilnash.courseproject.model.education.HwResponse;
 import com.jilnash.courseproject.repo.HomeworkRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
@@ -20,9 +18,6 @@ public class HomeworkService {
 
     @Autowired
     private StudentService studentService;
-
-    @Autowired
-    private TeacherService teacherService;
 
     @Autowired
     private TaskService taskService;
@@ -77,21 +72,5 @@ public class HomeworkService {
                 .orElseThrow(() -> new UsernameNotFoundException("Homework not found"));
 
         return s3Service.getFileFromS3(homework.getAudioLink(), "audio.mpeg");
-    }
-
-    public void createResponseToHomework(Long id, HwResponseDTO responseDTO) {
-
-        Homework homework = homeworkRepo
-                .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Homework not found"));
-
-        HwResponse hwResponse = new HwResponse();
-
-        hwResponse.setHomework(homework);
-        hwResponse.setTeacher(
-                teacherService.getTeacherById(responseDTO.getTeacherId())
-        );
-
-        // some logic
     }
 }

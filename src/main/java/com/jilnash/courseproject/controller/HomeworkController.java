@@ -4,6 +4,7 @@ import com.jilnash.courseproject.dto.request.education.HomeworkDTO;
 import com.jilnash.courseproject.dto.request.education.HwResponseDTO;
 import com.jilnash.courseproject.dto.response.AppResponse;
 import com.jilnash.courseproject.service.HomeworkService;
+import com.jilnash.courseproject.service.HwResponseService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -19,6 +20,9 @@ public class HomeworkController {
 
     @Autowired
     private HomeworkService homeworkService;
+
+    @Autowired
+    private HwResponseService hwResponseService;
 
     @GetMapping
     public ResponseEntity<?> getHomeworks() {
@@ -63,18 +67,27 @@ public class HomeworkController {
     }
 
     @PutMapping("{id}/responses")
-    public String createResponseToHomework(@PathVariable Long id,
-                                           @Valid @RequestBody HwResponseDTO responseDTO) {
+    public ResponseEntity<?> createResponseToHomework(@PathVariable Long id,
+                                                      @Valid @RequestBody HwResponseDTO responseDTO) {
 
-        System.out.println(responseDTO);
-
-        return "Created response to homework " + id;
+        return ResponseEntity.ok(
+                new AppResponse(
+                        "Response created successfully",
+                        200,
+                        hwResponseService.createResponseToHomework(id, responseDTO)
+                )
+        );
     }
 
     @GetMapping("{id}/responses/{responseId}")
-    public String getResponseOfHomework(@PathVariable Long id,
-                                        @PathVariable Long responseId) {
+    public ResponseEntity<?> getResponseOfHomework(@PathVariable Long responseId) {
 
-        return "Response " + responseId + " of homework " + id;
+        return ResponseEntity.ok(
+                new AppResponse(
+                        "Response of homework",
+                        200,
+                        hwResponseService.getResponseById(responseId)
+                )
+        );
     }
 }
