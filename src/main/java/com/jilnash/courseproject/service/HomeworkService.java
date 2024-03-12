@@ -1,6 +1,7 @@
 package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.education.HomeworkDTO;
+import com.jilnash.courseproject.exception.HomeworkFrequentPostingException;
 import com.jilnash.courseproject.model.education.Homework;
 import com.jilnash.courseproject.repo.HomeworkRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,8 @@ import org.springframework.core.io.Resource;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -30,6 +33,17 @@ public class HomeworkService {
     }
 
     public Homework createHomework(HomeworkDTO homeworkDTO) throws Exception {
+
+        Date weekBefore = Date.valueOf(LocalDate.now().minusWeeks(1));
+
+        if (
+                homeworkRepo.findByTaskIdAndStudentIdAndCreatedAtAfter(
+                        homeworkDTO.getTaskId(),
+                        homeworkDTO.getStudentId(),
+                        weekBefore
+                ).isPresent()
+        )
+            throw new HomeworkFrequentPostingException("Homework must be posted once a week");
 
         Homework homework = new Homework();
 
