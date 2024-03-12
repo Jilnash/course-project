@@ -1,12 +1,12 @@
 package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.education.HwResponseDTO;
+import com.jilnash.courseproject.exception.HomeworkAlreadyCheckedException;
 import com.jilnash.courseproject.model.education.Comment;
 import com.jilnash.courseproject.model.education.Homework;
 import com.jilnash.courseproject.model.education.HwResponse;
 import com.jilnash.courseproject.model.education.TimeRange;
 import com.jilnash.courseproject.repo.CommentRepo;
-import com.jilnash.courseproject.repo.HomeworkRepo;
 import com.jilnash.courseproject.repo.ResponseRepo;
 import com.jilnash.courseproject.repo.TimeRangeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class HwResponseService {
 
     @Autowired
-    private HomeworkRepo homeworkRepo;
+    private HomeworkService homeworkService;
 
     @Autowired
     private ResponseRepo responseRepo;
@@ -39,9 +39,12 @@ public class HwResponseService {
 
     public boolean createResponseToHomework(Long id, HwResponseDTO responseDTO) {
 
-        Homework homework = homeworkRepo
-                .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Homework not found"));
+        Homework homework = homeworkService.getHomeworkById(id);
+
+        if (homework.getChecked())
+            throw new HomeworkAlreadyCheckedException("Homework already checked");
+
+        homeworkService.checkHomework(homework);
 
         HwResponse hwResponse = new HwResponse();
 

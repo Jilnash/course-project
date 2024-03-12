@@ -79,4 +79,9 @@ public class HomeworkService {
                 .findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("Homework not found"));
     }
+
+    public void checkHomework(Homework hw) {
+        hw.setChecked(true);
+        homeworkRepo.save(hw);
+    }
 }
