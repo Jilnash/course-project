@@ -65,12 +65,18 @@ public class HomeworkService {
         return homeworkRepo.save(homework);
     }
 
-    public Resource getHomeworkById(Long id) {
+    public Resource getHomeworkAudioById(Long id) {
 
         Homework homework = homeworkRepo
                 .findById(id)
                 .orElseThrow(() -> new UsernameNotFoundException("Homework not found"));
 
         return s3Service.getFileFromS3(homework.getAudioLink(), "audio.mpeg");
+    }
+
+    public Homework getHomeworkById(Long id) {
+        return homeworkRepo
+                .findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("Homework not found"));
     }
 }
