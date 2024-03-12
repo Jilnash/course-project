@@ -1,12 +1,13 @@
 package com.jilnash.courseproject.controller;
 
 import com.jilnash.courseproject.dto.response.AppException;
+import com.jilnash.courseproject.exception.HomeworkAlreadyCheckedException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
 public class ExceptionController {
@@ -35,6 +36,16 @@ public class ExceptionController {
                 new AppException(
                         ex.getMessage(),
                         HttpStatus.BAD_REQUEST.value())
+        );
+    }
+
+    @ExceptionHandler(HomeworkAlreadyCheckedException.class)
+    public ResponseEntity<?> handleHomeworkAlreadyCheckedException(HomeworkAlreadyCheckedException ex) {
+        return ResponseEntity.badRequest().body(
+                new AppException(
+                        ex.getMessage(),
+                        HttpStatus.BAD_REQUEST.value()
+                )
         );
     }
 }
