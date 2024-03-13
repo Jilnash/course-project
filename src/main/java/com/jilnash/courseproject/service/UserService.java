@@ -1,8 +1,10 @@
 package com.jilnash.courseproject.service;
 
+import com.jilnash.courseproject.dto.request.auth.AuthorityListDTO;
 import com.jilnash.courseproject.dto.request.auth.PasswordChangeDTO;
 import com.jilnash.courseproject.dto.request.auth.RegisterFormDTO;
 import com.jilnash.courseproject.dto.request.participants.UserDTO;
+import com.jilnash.courseproject.model.participants.Role;
 import com.jilnash.courseproject.model.participants.User;
 import com.jilnash.courseproject.repo.RoleRepo;
 import com.jilnash.courseproject.repo.UserRepo;
@@ -103,7 +105,25 @@ public class UserService implements UserDetailsService {
 
         user.setPassword(encoder.encode(passwordChangeDTO.getNewPassword()));
 
-        return userRepo.save(user) != null;
+        userRepo.save(user);
+        return true;
+    }
+
+    public boolean changeAuthority(Long id, AuthorityListDTO authorityListDTO) {
+
+        User user = userRepo
+                .findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        List<Role> newRoles = authorityListDTO
+                .getAuthorities().stream()
+                .map(roleRepo::findByName)
+                .collect(Collectors.toList());
+
+        user.setRoles(newRoles);
+
+        userRepo.save(user);
+        return true;
     }
 
     @Override

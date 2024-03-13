@@ -1,5 +1,6 @@
 package com.jilnash.courseproject.controller;
 
+import com.jilnash.courseproject.dto.request.auth.AuthorityListDTO;
 import com.jilnash.courseproject.dto.request.auth.PasswordChangeDTO;
 import com.jilnash.courseproject.dto.request.participants.UserDTO;
 import com.jilnash.courseproject.dto.response.AppException;
@@ -67,6 +68,18 @@ public class UserController {
                         "Password changed successfully",
                         200,
                         userService.changePassword(id, passwordChangeDTO)
+                )
+        );
+    }
+
+    @PostMapping("{id}/change-authority")
+    public ResponseEntity<?> changeUserAuthority(@PathVariable Long id,
+                                                 @Valid @RequestBody AuthorityListDTO authorityListDTO) {
+        return ResponseEntity.ok(
+                new AppResponse(
+                        "Authority changed successfully",
+                        200,
+                        userService.changeAuthority(id, authorityListDTO)
                 )
         );
     }
