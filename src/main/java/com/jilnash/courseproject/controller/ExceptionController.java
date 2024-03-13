@@ -2,6 +2,7 @@ package com.jilnash.courseproject.controller;
 
 import com.jilnash.courseproject.dto.response.AppException;
 import com.jilnash.courseproject.exception.HomeworkAlreadyCheckedException;
+import com.jilnash.courseproject.exception.HomeworkFrequentPostingException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -41,6 +42,16 @@ public class ExceptionController {
 
     @ExceptionHandler(HomeworkAlreadyCheckedException.class)
     public ResponseEntity<?> handleHomeworkAlreadyCheckedException(HomeworkAlreadyCheckedException ex) {
+        return ResponseEntity.badRequest().body(
+                new AppException(
+                        ex.getMessage(),
+                        HttpStatus.BAD_REQUEST.value()
+                )
+        );
+    }
+
+    @ExceptionHandler(HomeworkFrequentPostingException.class)
+    public ResponseEntity<?> handleHomeworkFrequentPostingException(HomeworkFrequentPostingException ex) {
         return ResponseEntity.badRequest().body(
                 new AppException(
                         ex.getMessage(),
