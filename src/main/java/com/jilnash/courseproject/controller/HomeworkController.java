@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.Date;
+
 @RestController
 @RequestMapping("homeworks")
 @CrossOrigin(origins = "*")
@@ -25,13 +27,17 @@ public class HomeworkController {
     private HwResponseService hwResponseService;
 
     @GetMapping
-    public ResponseEntity<?> getHomeworks() {
+    public ResponseEntity<?> getHomeworks(
+            @RequestParam(value = "studentId", required = false)    Long studentId,
+            @RequestParam(value = "taskId", required = false)       Long taskId,
+            @RequestParam(value = "checked", required = false)      Boolean checked,
+            @RequestParam(value = "createdAfter", required = false) Date createdAfter) {
 
         return ResponseEntity.ok(
                 new AppResponse(
                         "List of homeworks",
                         200,
-                        homeworkService.getHomeworks()
+                        homeworkService.getHomeworks(studentId, taskId, checked, createdAfter)
                 )
         );
     }

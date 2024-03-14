@@ -4,8 +4,10 @@ import com.jilnash.courseproject.dto.request.education.HomeworkDTO;
 import com.jilnash.courseproject.exception.HomeworkFrequentPostingException;
 import com.jilnash.courseproject.model.education.Homework;
 import com.jilnash.courseproject.repo.HomeworkRepo;
+import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -28,8 +30,27 @@ public class HomeworkService {
     @Autowired
     private S3Service s3Service;
 
-    public List<Homework> getHomeworks() {
-        return homeworkRepo.findAll();
+    public List<Homework> getHomeworks(Long studentId, Long taskId, Boolean checked, Date createdAfter) {
+
+        Specification<Homework> spec = (root, query, cb) -> {
+            Predicate p = cb.conjunction();
+
+            if (studentId != null)
+                p = cb.and(p, cb.equal(root.get("student").get("id"), studentId));
+
+            if (taskId != null)
+                p = cb.and(p, cb.equal(root.get("task").get("id"), taskId));
+
+            if (checked != null)
+                p = cb.and(p, cb.equal(root.get("checked"), checked));
+
+            if (createdAfter != null)
+                p = cb.and(p, cb.greaterThanOrEqualTo(root.get("createdAt"), createdAfter));
+
+            return p;
+        };
+
+        return homeworkRepo.findAll(spec);
     }
 
     public Homework createHomework(HomeworkDTO homeworkDTO) throws Exception {
@@ -37,11 +58,11 @@ public class HomeworkService {
         Date weekBefore = Date.valueOf(LocalDate.now().minusWeeks(1));
 
         if (
-                homeworkRepo.findByTaskIdAndStudentIdAndCreatedAtAfter(
+                !homeworkRepo.findAllByTaskIdAndStudentIdAndCreatedAtAfter(
                         homeworkDTO.getTaskId(),
                         homeworkDTO.getStudentId(),
                         weekBefore
-                ).isPresent()
+                ).isEmpty()
         )
             throw new HomeworkFrequentPostingException("Homework must be posted once a week");
 
