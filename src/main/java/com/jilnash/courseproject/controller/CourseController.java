@@ -7,6 +7,7 @@ import com.jilnash.courseproject.service.CourseService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -63,11 +64,14 @@ public class CourseController {
 
     @GetMapping("/{id}/tasks")
     public ResponseEntity<?> getTasksInCourse(@PathVariable Long id) {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+
         return ResponseEntity.ok(
                 new AppResponse(
                         "List of tasks in course",
                         200,
-                        courseService.getCourseTasks(id)
+                        courseService.getCourseTasks(id, username)
                 )
         );
     }

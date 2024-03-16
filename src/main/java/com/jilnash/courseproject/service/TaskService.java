@@ -2,9 +2,9 @@ package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.education.TaskDTO;
 import com.jilnash.courseproject.model.education.Task;
-import com.jilnash.courseproject.repo.AdminRepo;
-import com.jilnash.courseproject.repo.CourseRepo;
-import com.jilnash.courseproject.repo.TaskRepo;
+import com.jilnash.courseproject.repo.participants.AdminRepo;
+import com.jilnash.courseproject.repo.education.CourseRepo;
+import com.jilnash.courseproject.repo.education.TaskRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;

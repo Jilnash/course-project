@@ -6,8 +6,8 @@ import com.jilnash.courseproject.dto.request.auth.RegisterFormDTO;
 import com.jilnash.courseproject.dto.request.participants.UserDTO;
 import com.jilnash.courseproject.model.participants.Role;
 import com.jilnash.courseproject.model.participants.User;
-import com.jilnash.courseproject.repo.RoleRepo;
-import com.jilnash.courseproject.repo.UserRepo;
+import com.jilnash.courseproject.repo.participants.RoleRepo;
+import com.jilnash.courseproject.repo.participants.UserRepo;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -62,9 +62,7 @@ public class UserService implements UserDetailsService {
 
     public boolean updateUser(Long id, UserDTO userDTO) {
 
-        User user = userRepo
-                .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = getUserById(id);
 
         userRepo.findByLogin(userDTO.getLogin())
                 .ifPresent(u -> {

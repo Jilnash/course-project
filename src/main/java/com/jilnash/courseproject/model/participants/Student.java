@@ -1,13 +1,11 @@
 package com.jilnash.courseproject.model.participants;
 
-import com.jilnash.courseproject.model.education.Course;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
-import java.util.List;
 
 @Data
 @Entity
@@ -26,14 +24,6 @@ public class Student {
     private String surname;
 
     private String skype;
-
-    @ManyToMany
-    @JoinTable(
-            name = "student_course",
-            joinColumns = @JoinColumn(name = "student_id"),
-            inverseJoinColumns = @JoinColumn(name = "course_id")
-    )
-    private List<Course> courses;
 
     @Column(name = "created_at")
     @CreationTimestamp

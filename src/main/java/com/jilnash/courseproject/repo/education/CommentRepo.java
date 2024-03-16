@@ -1,4 +1,4 @@
-package com.jilnash.courseproject.repo;
+package com.jilnash.courseproject.repo.education;
 
 import com.jilnash.courseproject.model.education.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;

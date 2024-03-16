@@ -3,7 +3,7 @@ package com.jilnash.courseproject.service;
 import com.jilnash.courseproject.dto.request.education.HomeworkDTO;
 import com.jilnash.courseproject.exception.HomeworkFrequentPostingException;
 import com.jilnash.courseproject.model.education.Homework;
-import com.jilnash.courseproject.repo.HomeworkRepo;
+import com.jilnash.courseproject.repo.education.HomeworkRepo;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;

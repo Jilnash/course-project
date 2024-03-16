@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name = "task_prerequisites")
+@Table(name = "student_task_complete")
 public class StudentTaskComplete {
 
     @Id

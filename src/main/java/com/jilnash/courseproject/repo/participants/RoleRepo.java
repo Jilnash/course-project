@@ -1,4 +1,4 @@
-package com.jilnash.courseproject.repo;
+package com.jilnash.courseproject.repo.participants;
 
 import com.jilnash.courseproject.model.participants.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

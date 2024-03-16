@@ -2,10 +2,13 @@ package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.education.CourseDTO;
 import com.jilnash.courseproject.dto.request.education.TaskDTO;
+import com.jilnash.courseproject.exception.StudentCourseNoAccessException;
 import com.jilnash.courseproject.model.education.Course;
 import com.jilnash.courseproject.model.education.Task;
-import com.jilnash.courseproject.repo.AdminRepo;
-import com.jilnash.courseproject.repo.CourseRepo;
+import com.jilnash.courseproject.model.participants.Role;
+import com.jilnash.courseproject.model.participants.User;
+import com.jilnash.courseproject.repo.education.CourseRepo;
+import com.jilnash.courseproject.repo.participants.AdminRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -23,6 +26,12 @@ public class CourseService {
 
     @Autowired
     private TaskService taskService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private StudentService studentService;
 
     public List<Course> getCourses() {
         return courseRepo.findAll();
@@ -52,9 +61,7 @@ public class CourseService {
 
     public boolean updateCourse(Long id, CourseDTO courseDTO) {
 
-        Course course = courseRepo
-                .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Course not found"));
+        Course course = getCourse(id);
 
         course.setName(courseDTO.getName());
         course.setDescription(courseDTO.getDescription());
@@ -69,11 +76,19 @@ public class CourseService {
         return true;
     }
 
-    public List<Task> getCourseTasks(Long id) {
-        return courseRepo
-                .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Course not found"))
-                .getTasks();
+    public List<Task> getCourseTasks(Long id, String username) {
+
+        Course course = getCourse(id);
+
+        User user = userService.findByLogin(username).get();
+
+        List<String> userRoles = user.getRoles().stream().map(Role::getName).toList();
+
+        if (userRoles.size() == 1 && userRoles.contains("STUDENT"))
+            if (!studentService.hasAccessToCourse(studentService.getStudent(user).getId(), id))
+                throw new StudentCourseNoAccessException("You don't have access to this course");
+
+        return course.getTasks();
     }
 
     public Task getCourseTask(Long courseId, Long taskId) {
@@ -89,9 +104,7 @@ public class CourseService {
 
     public Task createCourseTask(Long courseId, TaskDTO taskDTO) {
 
-        Course course = courseRepo
-                .findById(courseId)
-                .orElseThrow(() -> new UsernameNotFoundException("Course not found"));
+        Course course = getCourse(courseId);
 
         course.setUpdatedBy(
                 adminRepo

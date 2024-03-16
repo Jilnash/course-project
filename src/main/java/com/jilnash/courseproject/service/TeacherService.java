@@ -2,7 +2,7 @@ package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.participants.TeacherDTO;
 import com.jilnash.courseproject.model.participants.Teacher;
-import com.jilnash.courseproject.repo.TeacherRepo;
+import com.jilnash.courseproject.repo.participants.TeacherRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
