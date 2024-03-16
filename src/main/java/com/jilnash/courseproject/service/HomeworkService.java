@@ -102,9 +102,7 @@ public class HomeworkService {
 
     public Resource getHomeworkAudioById(Long id) {
 
-        Homework homework = homeworkRepo
-                .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Homework not found"));
+        Homework homework = getHomeworkById(id);
 
         return s3Service.getFileFromS3(homework.getAudioLink(), "audio.mpeg");
     }

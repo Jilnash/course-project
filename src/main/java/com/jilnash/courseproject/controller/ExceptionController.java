@@ -3,7 +3,7 @@ package com.jilnash.courseproject.controller;
 import com.jilnash.courseproject.dto.response.AppException;
 import com.jilnash.courseproject.exception.HomeworkAlreadyCheckedException;
 import com.jilnash.courseproject.exception.HomeworkFrequentPostingException;
-import com.jilnash.courseproject.exception.StudentCourseNoAccessException;
+import com.jilnash.courseproject.exception.StudentCourseAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -61,8 +61,8 @@ public class ExceptionController {
         );
     }
 
-    @ExceptionHandler(StudentCourseNoAccessException.class)
-    public ResponseEntity<?> handleStudentCourseNoAccessException(StudentCourseNoAccessException ex) {
+    @ExceptionHandler(StudentCourseAccessException.class)
+    public ResponseEntity<?> handleStudentCourseNoAccessException(StudentCourseAccessException ex) {
         return ResponseEntity.badRequest().body(
                 new AppException(
                         ex.getMessage(),

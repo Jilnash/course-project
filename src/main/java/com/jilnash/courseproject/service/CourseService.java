@@ -2,13 +2,12 @@ package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.education.CourseDTO;
 import com.jilnash.courseproject.dto.request.education.TaskDTO;
-import com.jilnash.courseproject.exception.StudentCourseNoAccessException;
+import com.jilnash.courseproject.exception.StudentCourseAccessException;
 import com.jilnash.courseproject.model.education.Course;
 import com.jilnash.courseproject.model.education.Task;
 import com.jilnash.courseproject.model.participants.Role;
 import com.jilnash.courseproject.model.participants.User;
 import com.jilnash.courseproject.repo.education.CourseRepo;
-import com.jilnash.courseproject.repo.participants.AdminRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -22,7 +21,7 @@ public class CourseService {
     private CourseRepo courseRepo;
 
     @Autowired
-    private AdminRepo adminRepo;
+    private AdminService adminService;
 
     @Autowired
     private TaskService taskService;
@@ -50,11 +49,7 @@ public class CourseService {
         course.setName(courseDTO.getName());
         course.setDescription(courseDTO.getDescription());
         course.setDuration(courseDTO.getDuration());
-        course.setCreatedBy(
-                adminRepo
-                        .findById(courseDTO.getAdminId())
-                        .orElseThrow(() -> new UsernameNotFoundException("Admin not found"))
-        );
+        course.setCreatedBy(adminService.getAdmin(courseDTO.getAdminId()));
 
         return courseRepo.save(course);
     }
@@ -66,11 +61,7 @@ public class CourseService {
         course.setName(courseDTO.getName());
         course.setDescription(courseDTO.getDescription());
         course.setDuration(courseDTO.getDuration());
-        course.setUpdatedBy(
-                adminRepo
-                        .findById(courseDTO.getAdminId())
-                        .orElseThrow(() -> new UsernameNotFoundException("Admin not found"))
-        );
+        course.setUpdatedBy(adminService.getAdmin(courseDTO.getAdminId()));
 
         courseRepo.save(course);
         return true;
@@ -86,15 +77,13 @@ public class CourseService {
 
         if (userRoles.size() == 1 && userRoles.contains("STUDENT"))
             if (!studentService.hasAccessToCourse(studentService.getStudent(user).getId(), id))
-                throw new StudentCourseNoAccessException("You don't have access to this course");
+                throw new StudentCourseAccessException("You don't have access to this course");
 
         return course.getTasks();
     }
 
     public Task getCourseTask(Long courseId, Long taskId) {
-        return courseRepo
-                .findById(courseId)
-                .orElseThrow(() -> new UsernameNotFoundException("Course not found"))
+        return getCourse(courseId)
                 .getTasks()
                 .stream()
                 .filter(task -> task.getId().equals(taskId))
@@ -106,11 +95,7 @@ public class CourseService {
 
         Course course = getCourse(courseId);
 
-        course.setUpdatedBy(
-                adminRepo
-                        .findById(taskDTO.getAdminId())
-                        .orElseThrow(() -> new UsernameNotFoundException("Admin not found"))
-        );
+        course.setUpdatedBy(adminService.getAdmin(taskDTO.getAdminId()));
 
         courseRepo.save(course);
 

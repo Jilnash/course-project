@@ -1,6 +1,7 @@
 package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.participants.StudentDTO;
+import com.jilnash.courseproject.exception.StudentCourseAccessException;
 import com.jilnash.courseproject.model.access.StudentCourseAccess;
 import com.jilnash.courseproject.model.education.Course;
 import com.jilnash.courseproject.model.participants.Student;
@@ -68,6 +69,9 @@ public class StudentService {
     }
 
     public boolean purchaseCourse(Long studentId, Long courseId) {
+
+        if (hasAccessToCourse(studentId, courseId))
+            throw new StudentCourseAccessException("You already have access to this course");
 
         Student student = getStudent(studentId);
 
