@@ -91,11 +91,14 @@ public class CourseController {
     @GetMapping("/{id}/tasks/{taskId}")
     public ResponseEntity<?> getTaskInCourse(@PathVariable Long id,
                                              @PathVariable Long taskId) {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+
         return ResponseEntity.ok(
                 new AppResponse(
                         "Task found successfully",
                         200,
-                        courseService.getCourseTask(id, taskId)
+                        courseService.getCourseTask(id, taskId, username)
                 )
         );
     }

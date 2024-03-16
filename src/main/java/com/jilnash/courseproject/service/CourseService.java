@@ -5,8 +5,6 @@ import com.jilnash.courseproject.dto.request.education.TaskDTO;
 import com.jilnash.courseproject.exception.StudentCourseAccessException;
 import com.jilnash.courseproject.model.education.Course;
 import com.jilnash.courseproject.model.education.Task;
-import com.jilnash.courseproject.model.participants.Role;
-import com.jilnash.courseproject.model.participants.User;
 import com.jilnash.courseproject.repo.education.CourseRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,9 +26,6 @@ public class CourseService {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private StudentService studentService;
 
     public List<Course> getCourses() {
         return courseRepo.findAll();
@@ -67,22 +62,21 @@ public class CourseService {
         return true;
     }
 
-    public List<Task> getCourseTasks(Long id, String username) {
+    public List<Task> getCourseTasks(Long courseId, String username) {
 
-        Course course = getCourse(id);
+        Course course = getCourse(courseId);
 
-        User user = userService.findByLogin(username).get();
-
-        List<String> userRoles = user.getRoles().stream().map(Role::getName).toList();
-
-        if (userRoles.size() == 1 && userRoles.contains("STUDENT"))
-            if (!studentService.hasAccessToCourse(studentService.getStudent(user).getId(), id))
-                throw new StudentCourseAccessException("You don't have access to this course");
+        if (userService.hasAccessToCourse(username, courseId))
+            throw new StudentCourseAccessException("You don't have access to this course");
 
         return course.getTasks();
     }
 
-    public Task getCourseTask(Long courseId, Long taskId) {
+    public Task getCourseTask(Long courseId, Long taskId, String username) {
+
+        if (userService.hasAccessToCourse(username, courseId))
+            throw new StudentCourseAccessException("You don't have access to this course");
+
         return getCourse(courseId)
                 .getTasks()
                 .stream()

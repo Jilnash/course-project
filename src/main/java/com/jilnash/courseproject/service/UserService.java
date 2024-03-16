@@ -31,6 +31,9 @@ public class UserService implements UserDetailsService {
     @Autowired
     RoleRepo roleRepo;
 
+    @Autowired
+    StudentService studentService;
+
     PasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public Optional<User> findByLogin(String login) {
@@ -109,9 +112,7 @@ public class UserService implements UserDetailsService {
 
     public boolean changeAuthority(Long id, AuthorityListDTO authorityListDTO) {
 
-        User user = userRepo
-                .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        User user = getUserById(id);
 
         List<Role> newRoles = authorityListDTO
                 .getAuthorities().stream()
@@ -122,6 +123,17 @@ public class UserService implements UserDetailsService {
 
         userRepo.save(user);
         return true;
+    }
+    public boolean hasAccessToCourse(String username, Long courseId) {
+
+        User user = findByLogin(username).get();
+
+        List<String> userRoles = user.getRoles().stream().map(Role::getName).toList();
+
+        if (userRoles.size() == 1 && userRoles.contains("STUDENT"))
+            return !studentService.hasAccessToCourse(studentService.getStudent(user).getId(), courseId);
+
+        return false;
     }
 
     @Override
