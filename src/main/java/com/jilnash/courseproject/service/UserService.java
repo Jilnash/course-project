@@ -124,6 +124,7 @@ public class UserService implements UserDetailsService {
         userRepo.save(user);
         return true;
     }
+
     public boolean hasAccessToCourse(String username, Long courseId) {
 
         User user = findByLogin(username).get();
@@ -131,9 +132,9 @@ public class UserService implements UserDetailsService {
         List<String> userRoles = user.getRoles().stream().map(Role::getName).toList();
 
         if (userRoles.size() == 1 && userRoles.contains("STUDENT"))
-            return !studentService.hasAccessToCourse(studentService.getStudent(user).getId(), courseId);
+            return studentService.hasAccessToCourse(studentService.getStudent(user).getId(), courseId);
 
-        return false;
+        return true;
     }
 
     @Override

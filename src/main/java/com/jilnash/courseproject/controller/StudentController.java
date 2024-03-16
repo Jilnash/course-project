@@ -50,24 +50,13 @@ public class StudentController {
 
     @PatchMapping("{id}")
     public ResponseEntity<?> updateStudent(@PathVariable Long id,
-                                 @Valid @RequestBody StudentDTO studentDTO) {
+                                           @Valid @RequestBody StudentDTO studentDTO) {
 
         return ResponseEntity.ok(
                 new AppResponse(
                         "Student updated successfully",
                         200,
                         studentService.updateStudent(id, studentDTO)
-                )
-        );
-    }
-
-    @PostMapping("/{id}/purchase/{courseId}")
-    public ResponseEntity<?> purchaseCourse(@PathVariable Long id, @PathVariable Long courseId) {
-        return ResponseEntity.ok(
-                new AppResponse(
-                        "Course purchased successfully",
-                        200,
-                        studentService.purchaseCourse(id, courseId)
                 )
         );
     }

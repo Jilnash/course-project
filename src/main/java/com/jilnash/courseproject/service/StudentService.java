@@ -1,9 +1,6 @@
 package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.participants.StudentDTO;
-import com.jilnash.courseproject.exception.StudentCourseAccessException;
-import com.jilnash.courseproject.model.access.StudentCourseAccess;
-import com.jilnash.courseproject.model.education.Course;
 import com.jilnash.courseproject.model.participants.Student;
 import com.jilnash.courseproject.model.participants.User;
 import com.jilnash.courseproject.repo.access.StudentCourseAccessRepo;
@@ -21,9 +18,6 @@ public class StudentService {
 
     @Autowired
     private StudentRepo studentRepo;
-
-    @Autowired
-    private CourseService courseService;
 
     @Autowired
     private StudentCourseAccessRepo studentCourseAccessRepo;
@@ -64,26 +58,6 @@ public class StudentService {
         student.setSkype(studentDTO.getSkype());
 
         studentRepo.save(student);
-
-        return true;
-    }
-
-    public boolean purchaseCourse(Long studentId, Long courseId) {
-
-        if (hasAccessToCourse(studentId, courseId))
-            throw new StudentCourseAccessException("You already have access to this course");
-
-        Student student = getStudent(studentId);
-
-        Course course = courseService.getCourse(courseId);
-
-        studentCourseAccessRepo.save(
-                new StudentCourseAccess(
-                        student,
-                        course,
-                        Date.valueOf(LocalDate.now().plusMonths(1))
-                )
-        );
 
         return true;
     }

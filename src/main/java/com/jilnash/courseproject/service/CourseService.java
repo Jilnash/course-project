@@ -3,13 +3,18 @@ package com.jilnash.courseproject.service;
 import com.jilnash.courseproject.dto.request.education.CourseDTO;
 import com.jilnash.courseproject.dto.request.education.TaskDTO;
 import com.jilnash.courseproject.exception.StudentCourseAccessException;
+import com.jilnash.courseproject.model.access.StudentCourseAccess;
 import com.jilnash.courseproject.model.education.Course;
 import com.jilnash.courseproject.model.education.Task;
+import com.jilnash.courseproject.model.participants.Student;
+import com.jilnash.courseproject.repo.access.StudentCourseAccessRepo;
 import com.jilnash.courseproject.repo.education.CourseRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -26,6 +31,12 @@ public class CourseService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private StudentService studentService;
+
+    @Autowired
+    private StudentCourseAccessRepo studentCourseAccessRepo;
 
     public List<Course> getCourses() {
         return courseRepo.findAll();
@@ -62,11 +73,31 @@ public class CourseService {
         return true;
     }
 
+    public boolean purchaseCourse(Long courseId, String username) {
+
+        Course course = getCourse(courseId);
+
+        Student student = studentService.getStudent(userService.findByLogin(username).get());
+
+        if (studentService.hasAccessToCourse(student.getId(), courseId))
+            throw new StudentCourseAccessException("You already have access to this course");
+
+        studentCourseAccessRepo.save(
+                new StudentCourseAccess(
+                        student,
+                        course,
+                        Date.valueOf(LocalDate.now().plusMonths(1))
+                )
+        );
+
+        return true;
+    }
+
     public List<Task> getCourseTasks(Long courseId, String username) {
 
         Course course = getCourse(courseId);
 
-        if (userService.hasAccessToCourse(username, courseId))
+        if (!userService.hasAccessToCourse(username, courseId))
             throw new StudentCourseAccessException("You don't have access to this course");
 
         return course.getTasks();
@@ -74,10 +105,12 @@ public class CourseService {
 
     public Task getCourseTask(Long courseId, Long taskId, String username) {
 
-        if (userService.hasAccessToCourse(username, courseId))
+        Course course = getCourse(courseId);
+
+        if (!userService.hasAccessToCourse(username, courseId))
             throw new StudentCourseAccessException("You don't have access to this course");
 
-        return getCourse(courseId)
+        return course
                 .getTasks()
                 .stream()
                 .filter(task -> task.getId().equals(taskId))

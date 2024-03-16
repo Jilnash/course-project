@@ -62,6 +62,20 @@ public class CourseController {
         );
     }
 
+    @PostMapping("/{id}/purchase")
+    public ResponseEntity<?> purchaseCourse(@PathVariable Long id) {
+
+        String username = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+
+        return ResponseEntity.ok(
+                new AppResponse(
+                        "Course purchased successfully",
+                        200,
+                        courseService.purchaseCourse(id, username)
+                )
+        );
+    }
+
     @GetMapping("/{id}/tasks")
     public ResponseEntity<?> getTasksInCourse(@PathVariable Long id) {
 
