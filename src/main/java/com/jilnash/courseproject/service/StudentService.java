@@ -38,6 +38,12 @@ public class StudentService {
                 .orElseThrow(() -> new UsernameNotFoundException("Student not found"));
     }
 
+    public Student getStudent(String login) {
+        return studentRepo
+                .getByUserLogin(login)
+                .orElseThrow(() -> new UsernameNotFoundException("Student not found"));
+    }
+
     public Student createStudent(StudentDTO studentDTO) {
 
         Student student = new Student();

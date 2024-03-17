@@ -10,10 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 @AllArgsConstructor
 public class HomeworkDTO {
 
-    @NotNull(message = "Student id must not be null")
-    @PositiveOrZero(message = "Student id must be positive")
-    private Long studentId;
-
     @NotNull(message = "Task id must not be null")
     @PositiveOrZero(message = "Task id must be positive")
     private Long taskId;

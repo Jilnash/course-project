@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface StudentRepo extends JpaRepository<Student, Long> {
 
     Optional<Student> getByUser(User user);
+
+    Optional<Student> getByUserLogin(String login);
 }

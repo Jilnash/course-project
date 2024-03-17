@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -43,18 +44,19 @@ public class HomeworkController {
     }
 
     @PutMapping
-    public ResponseEntity<?> createHomework(@RequestParam("studentId") Long studentId,
-                                            @RequestParam("taskId") Long taskId,
+    public ResponseEntity<?> createHomework(@RequestParam("taskId") Long taskId,
                                             @RequestParam("audio") MultipartFile audio,
                                             @RequestParam("video") MultipartFile video) throws Exception {
         @Valid
-        HomeworkDTO homeworkDTO = new HomeworkDTO(studentId, taskId, audio, video);
+        HomeworkDTO homeworkDTO = new HomeworkDTO(taskId, audio, video);
+
+        String studentLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
         return ResponseEntity.ok(
                 new AppResponse(
                         "Homework created successfully",
                         200,
-                        homeworkService.createHomework(homeworkDTO)
+                        homeworkService.createHomework(homeworkDTO, studentLogin)
                 )
         );
     }

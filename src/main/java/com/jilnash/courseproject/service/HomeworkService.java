@@ -3,6 +3,7 @@ package com.jilnash.courseproject.service;
 import com.jilnash.courseproject.dto.request.education.HomeworkDTO;
 import com.jilnash.courseproject.exception.HomeworkFrequentPostingException;
 import com.jilnash.courseproject.model.education.Homework;
+import com.jilnash.courseproject.model.participants.Student;
 import com.jilnash.courseproject.repo.education.HomeworkRepo;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,14 +54,16 @@ public class HomeworkService {
         return homeworkRepo.findAll(spec);
     }
 
-    public Homework createHomework(HomeworkDTO homeworkDTO) throws Exception {
+    public Homework createHomework(HomeworkDTO homeworkDTO, String studentLogin) throws Exception {
 
         Date weekBefore = Date.valueOf(LocalDate.now().minusWeeks(1));
+
+        Student student = studentService.getStudent(studentLogin);
 
         if (
                 !homeworkRepo.findAllByTaskIdAndStudentIdAndCreatedAtAfter(
                         homeworkDTO.getTaskId(),
-                        homeworkDTO.getStudentId(),
+                        student.getId(),
                         weekBefore
                 ).isEmpty()
         )
@@ -68,25 +71,21 @@ public class HomeworkService {
 
         Homework homework = new Homework();
 
-        homework.setStudent(
-                studentService.getStudent(homeworkDTO.getStudentId())
-        );
-        homework.setTask(
-                taskService.getTask(homeworkDTO.getTaskId())
-        );
+        homework.setStudent(student);
+        homework.setTask( taskService.getTask(homeworkDTO.getTaskId()) );
 
-        Integer attempts = homeworkRepo.countByStudentIdAndTaskId(homeworkDTO.getStudentId(), homeworkDTO.getTaskId());
+        Integer attempts = homeworkRepo.countByStudentIdAndTaskId(student.getId(), homeworkDTO.getTaskId());
 
         String audioLink = String.format(
                 "student%d-task%d-audio-%d",
-                homeworkDTO.getStudentId(),
+                student.getId(),
                 homeworkDTO.getTaskId(),
                 attempts + 1
         );
 
         String videoLink = String.format(
                 "student%d-task%d-video-%d",
-                homeworkDTO.getStudentId(),
+                student.getId(),
                 homeworkDTO.getTaskId(),
                 attempts + 1
         );
