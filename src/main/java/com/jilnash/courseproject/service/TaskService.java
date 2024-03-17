@@ -19,14 +19,14 @@ public class TaskService {
     @Autowired
     private CourseService courseService;
 
-    public Task createTask(TaskDTO taskDTO) {
+    public Task createTask(TaskDTO taskDTO, String login) {
 
         Task task = new Task();
 
         task.setDescription(taskDTO.getDescription());
         task.setVideoLink(taskDTO.getVideoLink());
         task.setCourse(courseService.getCourse(taskDTO.getCourseId()));
-        task.setCreatedBy(adminService.getAdmin(taskDTO.getAdminId()));
+        task.setCreatedBy(adminService.getAdmin(login));
 
         return taskRepo.save(task);
     }
@@ -37,14 +37,14 @@ public class TaskService {
                 .orElseThrow(() -> new UsernameNotFoundException("Task not found"));
     }
 
-    public boolean updateTask(Long id, TaskDTO taskDTO) {
+    public boolean updateTask(Long id, TaskDTO taskDTO, String login) {
 
         Task task = getTask(id);
 
         task.setDescription(taskDTO.getDescription());
         task.setVideoLink(taskDTO.getVideoLink());
         task.setCourse(courseService.getCourse(taskDTO.getCourseId()));
-        task.setLastUpdatedBy(adminService.getAdmin(taskDTO.getAdminId()));
+        task.setLastUpdatedBy(adminService.getAdmin(login));
 
         taskRepo.save(task);
         return true;

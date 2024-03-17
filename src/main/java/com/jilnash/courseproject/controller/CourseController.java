@@ -30,11 +30,14 @@ public class CourseController {
 
     @PutMapping
     public ResponseEntity<?> createCourse(@Valid @RequestBody CourseDTO courseDTO) {
+
+        String adminLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+
         return ResponseEntity.ok(
                 new AppResponse(
                         "Course created successfully",
                         201,
-                        courseService.createCourse(courseDTO)
+                        courseService.createCourse(courseDTO, adminLogin)
                 )
         );
     }
@@ -53,11 +56,14 @@ public class CourseController {
     @PatchMapping("/{id}")
     public ResponseEntity<?> updateCourse(@PathVariable Long id,
                                           @Valid @RequestBody CourseDTO courseDTO) {
+
+        String adminLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+
         return ResponseEntity.ok(
                 new AppResponse(
                         "Course updated successfully",
                         200,
-                        courseService.updateCourse(id, courseDTO)
+                        courseService.updateCourse(id, courseDTO, adminLogin)
                 )
         );
     }
@@ -93,11 +99,14 @@ public class CourseController {
     @PutMapping("/{id}/tasks")
     public ResponseEntity<?> createTaskInCourse(@PathVariable Long id,
                                                 @Valid @RequestBody TaskDTO taskDTO) {
+
+        String adminLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+
         return ResponseEntity.ok(
                 new AppResponse(
                         "Task created successfully",
                         201,
-                        courseService.createCourseTask(id, taskDTO)
+                        courseService.createCourseTask(id, taskDTO, adminLogin)
                 )
         );
     }
@@ -121,11 +130,14 @@ public class CourseController {
     public ResponseEntity<?> updateTaskInCourse(@PathVariable Long id,
                                                 @PathVariable Long taskId,
                                                 @RequestBody TaskDTO taskDTO) {
+
+        String adminLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+
         return ResponseEntity.ok(
                 new AppResponse(
                         "Task updated successfully",
                         200,
-                        courseService.updateCourseTask(taskId, taskDTO)
+                        courseService.updateCourseTask(taskId, taskDTO, adminLogin)
                 )
         );
     }

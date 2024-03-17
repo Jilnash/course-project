@@ -48,26 +48,26 @@ public class CourseService {
                 .orElseThrow(() -> new UsernameNotFoundException("Course not found"));
     }
 
-    public Course createCourse(CourseDTO courseDTO) {
+    public Course createCourse(CourseDTO courseDTO, String login) {
 
         Course course = new Course();
 
         course.setName(courseDTO.getName());
         course.setDescription(courseDTO.getDescription());
         course.setDuration(courseDTO.getDuration());
-        course.setCreatedBy(adminService.getAdmin(courseDTO.getAdminId()));
+        course.setCreatedBy(adminService.getAdmin(login));
 
         return courseRepo.save(course);
     }
 
-    public boolean updateCourse(Long id, CourseDTO courseDTO) {
+    public boolean updateCourse(Long id, CourseDTO courseDTO, String login) {
 
         Course course = getCourse(id);
 
         course.setName(courseDTO.getName());
         course.setDescription(courseDTO.getDescription());
         course.setDuration(courseDTO.getDuration());
-        course.setUpdatedBy(adminService.getAdmin(courseDTO.getAdminId()));
+        course.setUpdatedBy(adminService.getAdmin(login));
 
         courseRepo.save(course);
         return true;
@@ -118,19 +118,19 @@ public class CourseService {
                 .orElseThrow(() -> new UsernameNotFoundException("Task not found"));
     }
 
-    public Task createCourseTask(Long courseId, TaskDTO taskDTO) {
+    public Task createCourseTask(Long courseId, TaskDTO taskDTO, String login) {
 
         Course course = getCourse(courseId);
 
-        course.setUpdatedBy(adminService.getAdmin(taskDTO.getAdminId()));
+        course.setUpdatedBy(adminService.getAdmin(login));
 
         courseRepo.save(course);
 
-        return taskService.createTask(taskDTO);
+        return taskService.createTask(taskDTO, login);
     }
 
-    public boolean updateCourseTask(Long taskId, TaskDTO taskDTO) {
+    public boolean updateCourseTask(Long taskId, TaskDTO taskDTO, String login) {
 
-        return taskService.updateTask(taskId, taskDTO);
+        return taskService.updateTask(taskId, taskDTO, login);
     }
 }

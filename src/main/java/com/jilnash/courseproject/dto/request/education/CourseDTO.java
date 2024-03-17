@@ -2,7 +2,6 @@ package com.jilnash.courseproject.dto.request.education;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,10 +9,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class CourseDTO {
-
-    @NotNull(message = "Admin id must not be null")
-    @PositiveOrZero(message = "Admin id must be positive")
-    private Long adminId;
 
     @NotNull(message = "Name must not be null")
     @NotBlank(message = "Course name must not be empty")

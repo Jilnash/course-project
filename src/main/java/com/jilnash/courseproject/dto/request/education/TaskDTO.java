@@ -14,10 +14,6 @@ public class TaskDTO {
     @PositiveOrZero(message = "Course id must be positive")
     private Long courseId;
 
-    @NotNull(message = "Admin id cannot be null")
-    @PositiveOrZero(message = "Admin id must be positive")
-    private Long adminId;
-
     @Size(min = 20, max = 1000, message = "Description must be between 20 and 1000 characters")
     private String description;
 

@@ -12,9 +12,9 @@ public class AdminService {
     @Autowired
     private AdminRepo adminRepo;
 
-    public Admin getAdmin(Long id) {
+    public Admin getAdmin(String login) {
         return adminRepo
-                .findById(id)
+                .findByUserLogin(login)
                 .orElseThrow(() -> new UsernameNotFoundException("Admin not found"));
     }
 }
