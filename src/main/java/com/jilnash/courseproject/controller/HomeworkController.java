@@ -72,7 +72,7 @@ public class HomeworkController {
                 .body(homeworkService.getHomeworkAudioById(id).getContentAsByteArray());
     }
 
-    @PutMapping("{id}/responses")
+    @PutMapping("{id}/response")
     public ResponseEntity<?> createResponseToHomework(@PathVariable Long id,
                                                       @Valid @RequestBody HwResponseDTO responseDTO) {
 
@@ -85,14 +85,14 @@ public class HomeworkController {
         );
     }
 
-    @GetMapping("{id}/responses/{responseId}")
-    public ResponseEntity<?> getResponseOfHomework(@PathVariable Long responseId) {
+    @GetMapping("{hwId}/response")
+    public ResponseEntity<?> getResponseOfHomework(@PathVariable Long hwId) {
 
         return ResponseEntity.ok(
                 new AppResponse(
                         "Response of homework",
                         200,
-                        hwResponseService.getResponseById(responseId)
+                        hwResponseService.getResponse(hwId)
                 )
         );
     }

@@ -1,5 +1,6 @@
 package com.jilnash.courseproject.model.education;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,7 @@ public class Comment {
     private TimeRange timeRange;
 
     @ManyToOne
+    @JsonIgnore
     private HwResponse hwResponse;
 
     private Date createdAt;

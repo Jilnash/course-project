@@ -31,9 +31,9 @@ public class HwResponseService {
     @Autowired
     private TeacherService teacherService;
 
-    public HwResponse getResponseById(Long id) {
+    public HwResponse getResponse(Long hwId) {
         return responseRepo
-                .findById(id)
+                .findByHomeworkId(hwId)
                 .orElseThrow(() -> new UsernameNotFoundException("Response not found"));
     }
 
