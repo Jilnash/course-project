@@ -58,48 +58,17 @@ public class HomeworkService {
 
     public Homework createHomework(HomeworkDTO homeworkDTO, String studentLogin) throws Exception {
 
-        Date weekBefore = Date.valueOf(LocalDate.now().minusWeeks(1));
-
         Student student = studentService.getStudent(studentLogin);
 
-        if (
-                student.getCompletedTasks()
-                        .stream()
-                        .map(Task::getId)
-                        .toList()
-                        .contains(homeworkDTO.getTaskId())
-        )
-            throw new TaskAlreadyCompletedException("Task already completed");
-
-        if (
-                !homeworkRepo.findAllByTaskIdAndStudentIdAndCreatedAtAfter(
-                        homeworkDTO.getTaskId(),
-                        student.getId(),
-                        weekBefore
-                ).isEmpty()
-        )
-            throw new HomeworkFrequentPostingException("Homework must be posted once a week");
+        checkTaskCompletion(homeworkDTO, student);
+        checkHomeworkPostingFrequency(homeworkDTO, student);
 
         Homework homework = new Homework();
-
         homework.setStudent(student);
-        homework.setTask( taskService.getTask(homeworkDTO.getTaskId()) );
+        homework.setTask(taskService.getTask(homeworkDTO.getTaskId()));
 
-        Integer attempts = homeworkRepo.countByStudentIdAndTaskId(student.getId(), homeworkDTO.getTaskId());
-
-        String audioLink = String.format(
-                "student%d-task%d-audio-%d",
-                student.getId(),
-                homeworkDTO.getTaskId(),
-                attempts + 1
-        );
-
-        String videoLink = String.format(
-                "student%d-task%d-video-%d",
-                student.getId(),
-                homeworkDTO.getTaskId(),
-                attempts + 1
-        );
+        String audioLink = generateLink(homeworkDTO, student, "audio");
+        String videoLink = generateLink(homeworkDTO, student, "video");
 
         s3Service.putFileToS3(homeworkDTO.getAudio(), audioLink);
         s3Service.putFileToS3(homeworkDTO.getVideo(), videoLink);
@@ -108,6 +77,31 @@ public class HomeworkService {
         homework.setVideoLink(videoLink);
 
         return homeworkRepo.save(homework);
+    }
+
+    private void checkTaskCompletion(HomeworkDTO homeworkDTO, Student student) {
+        if (student.getCompletedTasks()
+                .stream()
+                .map(Task::getId)
+                .toList()
+                .contains(homeworkDTO.getTaskId())
+        )
+            throw new TaskAlreadyCompletedException("Task already completed");
+    }
+
+    private void checkHomeworkPostingFrequency(HomeworkDTO homeworkDTO, Student student) {
+        Date weekBefore = Date.valueOf(LocalDate.now().minusWeeks(1));
+        if (!homeworkRepo.findAllByTaskIdAndStudentIdAndCreatedAtAfter(
+                homeworkDTO.getTaskId(),
+                student.getId(),
+                weekBefore
+        ).isEmpty())
+            throw new HomeworkFrequentPostingException("Homework must be posted once a week");
+    }
+
+    private String generateLink(HomeworkDTO homeworkDTO, Student student, String fileType) {
+        Integer attempts = homeworkRepo.countByStudentIdAndTaskId(student.getId(), homeworkDTO.getTaskId());
+        return String.format("student%d-task%d-%s-%d", student.getId(), homeworkDTO.getTaskId(), fileType, attempts + 1);
     }
 
     public Resource getHomeworkAudioById(Long id) {
