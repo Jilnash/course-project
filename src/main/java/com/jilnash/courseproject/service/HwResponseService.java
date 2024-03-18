@@ -37,21 +37,17 @@ public class HwResponseService {
                 .orElseThrow(() -> new UsernameNotFoundException("Response not found"));
     }
 
-    public boolean createResponseToHomework(Long id, HwResponseDTO responseDTO) {
+    public boolean createResponseToHomework(Long id, HwResponseDTO responseDTO, String teacherLogin) {
 
         Homework homework = homeworkService.getHomeworkById(id);
 
         if (homework.getChecked())
             throw new HomeworkAlreadyCheckedException("Homework already checked");
 
-        homeworkService.checkHomework(homework);
-
         HwResponse hwResponse = new HwResponse();
 
+        hwResponse.setTeacher(teacherService.getTeacher(teacherLogin));
         hwResponse.setHomework(homework);
-        hwResponse.setTeacher(
-                teacherService.getTeacherById(responseDTO.getTeacherId())
-        );
 
         final HwResponse savedResponse = responseRepo.save(hwResponse);
 
@@ -71,6 +67,8 @@ public class HwResponseService {
                             );
                         }
                 );
+
+        homeworkService.checkHomework(homework);
 
         return true;
     }

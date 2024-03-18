@@ -78,11 +78,13 @@ public class HomeworkController {
     public ResponseEntity<?> createResponseToHomework(@PathVariable Long id,
                                                       @Valid @RequestBody HwResponseDTO responseDTO) {
 
+        String teacherLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+
         return ResponseEntity.ok(
                 new AppResponse(
                         "Response created successfully",
                         200,
-                        hwResponseService.createResponseToHomework(id, responseDTO)
+                        hwResponseService.createResponseToHomework(id, responseDTO, teacherLogin)
                 )
         );
     }

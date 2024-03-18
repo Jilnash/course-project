@@ -25,6 +25,12 @@ public class TeacherService {
                 .orElseThrow(() -> new UsernameNotFoundException("Teacher not found"));
     }
 
+    public Teacher getTeacher(String login) {
+        return teacherRepo
+                .findByUserLogin(login)
+                .orElseThrow(() -> new UsernameNotFoundException("Teacher not found"));
+    }
+
     public Teacher createTeacher(TeacherDTO teacherDTO) {
 
         Teacher teacher = new Teacher();
