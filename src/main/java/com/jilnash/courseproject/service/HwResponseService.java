@@ -47,35 +47,30 @@ public class HwResponseService {
         if (homework.getChecked())
             throw new HomeworkAlreadyCheckedException("Homework already checked");
 
-        HwResponse hwResponse = new HwResponse();
-
-        hwResponse.setTeacher(teacherService.getTeacher(teacherLogin));
-        hwResponse.setHomework(homework);
-
-        final HwResponse savedResponse = responseRepo.save(hwResponse);
-
-        responseDTO
-                .getComments()
-                .forEach(commentDTO -> {
-                            TimeRange timeRange = timeRangeRepo.save(
-                                    new TimeRange(commentDTO.getStart(), commentDTO.getEnd())
-                            );
-
-                            commentRepo.save(
-                                    new Comment(
-                                            commentDTO.getNote(),
-                                            timeRange,
-                                            savedResponse
-                                    )
-                            );
-                        }
-                );
-
+        HwResponse hwResponse = createHwResponse(teacherLogin, homework);
+        saveComments(responseDTO, hwResponse);
         homeworkService.checkHomework(homework);
-
-        if (responseDTO.getCompleted() != null && responseDTO.getCompleted())
-            studentService.completeTask(homework.getStudent(), homework.getTask());
+        completeTaskIfNecessary(responseDTO, homework);
 
         return true;
+    }
+
+    private HwResponse createHwResponse(String teacherLogin, Homework homework) {
+        HwResponse hwResponse = new HwResponse();
+        hwResponse.setTeacher(teacherService.getTeacher(teacherLogin));
+        hwResponse.setHomework(homework);
+        return responseRepo.save(hwResponse);
+    }
+
+    private void saveComments(HwResponseDTO responseDTO, HwResponse savedResponse) {
+        responseDTO.getComments().forEach(commentDTO -> {
+            TimeRange timeRange = timeRangeRepo.save(new TimeRange(commentDTO.getStart(), commentDTO.getEnd()));
+            commentRepo.save(new Comment(commentDTO.getNote(), timeRange, savedResponse));
+        });
+    }
+
+    private void completeTaskIfNecessary(HwResponseDTO responseDTO, Homework homework) {
+        if (responseDTO.getCompleted() != null && responseDTO.getCompleted())
+            studentService.completeTask(homework.getStudent(), homework.getTask());
     }
 }
