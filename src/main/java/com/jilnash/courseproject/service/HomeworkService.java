@@ -2,7 +2,9 @@ package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.education.HomeworkDTO;
 import com.jilnash.courseproject.exception.HomeworkFrequentPostingException;
+import com.jilnash.courseproject.exception.TaskAlreadyCompletedException;
 import com.jilnash.courseproject.model.education.Homework;
+import com.jilnash.courseproject.model.education.Task;
 import com.jilnash.courseproject.model.participants.Student;
 import com.jilnash.courseproject.repo.education.HomeworkRepo;
 import jakarta.persistence.criteria.Predicate;
@@ -59,6 +61,15 @@ public class HomeworkService {
         Date weekBefore = Date.valueOf(LocalDate.now().minusWeeks(1));
 
         Student student = studentService.getStudent(studentLogin);
+
+        if (
+                student.getCompletedTasks()
+                        .stream()
+                        .map(Task::getId)
+                        .toList()
+                        .contains(homeworkDTO.getTaskId())
+        )
+            throw new TaskAlreadyCompletedException("Task already completed");
 
         if (
                 !homeworkRepo.findAllByTaskIdAndStudentIdAndCreatedAtAfter(

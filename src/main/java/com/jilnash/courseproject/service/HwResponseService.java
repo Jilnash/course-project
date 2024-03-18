@@ -31,6 +31,9 @@ public class HwResponseService {
     @Autowired
     private TeacherService teacherService;
 
+    @Autowired
+    private StudentService studentService;
+
     public HwResponse getResponse(Long hwId) {
         return responseRepo
                 .findByHomeworkId(hwId)
@@ -69,6 +72,9 @@ public class HwResponseService {
                 );
 
         homeworkService.checkHomework(homework);
+
+        if (responseDTO.getCompleted() != null && responseDTO.getCompleted())
+            studentService.completeTask(homework.getStudent(), homework.getTask());
 
         return true;
     }

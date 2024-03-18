@@ -10,6 +10,8 @@ import java.util.List;
 @Data
 public class HwResponseDTO {
 
+    private Boolean completed;
+
     @Valid
     @NotNull(message = "Comments must not be null")
     @NotEmpty(message = "Comments must not be empty")

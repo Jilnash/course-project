@@ -1,6 +1,7 @@
 package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.participants.StudentDTO;
+import com.jilnash.courseproject.model.education.Task;
 import com.jilnash.courseproject.model.participants.Student;
 import com.jilnash.courseproject.model.participants.User;
 import com.jilnash.courseproject.repo.access.StudentCourseAccessRepo;
@@ -74,5 +75,12 @@ public class StudentService {
                 courseId,
                 Date.valueOf(LocalDate.now())
         );
+    }
+
+    public void completeTask(Student student, Task task) {
+
+        student.getCompletedTasks().add(task);
+
+        studentRepo.save(student);
     }
 }
