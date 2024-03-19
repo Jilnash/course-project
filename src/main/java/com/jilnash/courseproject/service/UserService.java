@@ -129,12 +129,18 @@ public class UserService implements UserDetailsService {
 
         User user = findByLogin(username).get();
 
-        List<String> userRoles = user.getRoles().stream().map(Role::getName).toList();
-
-        if (userRoles.size() == 1 && userRoles.contains("STUDENT"))
+        if (isStudent(user))
             return studentService.hasAccessToCourse(studentService.getStudent(user).getId(), courseId);
 
         return true;
+    }
+
+    public boolean isStudent(String username) {
+        return findByLogin(username).get().getRoles().stream().map(Role::getName).toList().contains("STUDENT");
+    }
+
+    public boolean isStudent(User user) {
+        return user.getRoles().stream().map(Role::getName).toList().contains("STUDENT");
     }
 
     @Override

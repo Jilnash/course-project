@@ -2,6 +2,7 @@ package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.education.CourseDTO;
 import com.jilnash.courseproject.dto.request.education.TaskDTO;
+import com.jilnash.courseproject.exception.IncompletePrerequisitesException;
 import com.jilnash.courseproject.exception.StudentCourseAccessException;
 import com.jilnash.courseproject.model.access.StudentCourseAccess;
 import com.jilnash.courseproject.model.education.Course;
@@ -110,12 +111,18 @@ public class CourseService {
         if (!userService.hasAccessToCourse(username, courseId))
             throw new StudentCourseAccessException("You don't have access to this course");
 
-        return course
-                .getTasks()
-                .stream()
-                .filter(task -> task.getId().equals(taskId))
-                .findFirst()
-                .orElseThrow(() -> new UsernameNotFoundException("Task not found"));
+        Task task = taskService.getTask(taskId);
+
+        if (!userService.isStudent(username))
+            return task;
+
+        List<Long> completedTasks = studentService.getStudent(username).getCompletedTasks().stream().map(Task::getId).toList();
+        List<Long> prerequisites = task.getPrerequisites().stream().map(Task::getId).toList();
+
+        if (completedTasks.containsAll(prerequisites))
+            return task;
+        else
+            throw new IncompletePrerequisitesException("You should complete all prerequisites first");
     }
 
     public Task createCourseTask(Long courseId, TaskDTO taskDTO, String login) {

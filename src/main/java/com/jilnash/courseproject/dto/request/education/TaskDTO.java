@@ -6,6 +6,8 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @AllArgsConstructor
 public class TaskDTO {
@@ -18,4 +20,7 @@ public class TaskDTO {
     private String description;
 
     private String videoLink;
+
+    @NotNull(message = "Prerequisites cannot be null")
+    private List<Long> prerequisites;
 }

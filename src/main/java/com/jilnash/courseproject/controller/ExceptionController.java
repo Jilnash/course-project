@@ -1,10 +1,7 @@
 package com.jilnash.courseproject.controller;
 
 import com.jilnash.courseproject.dto.response.AppException;
-import com.jilnash.courseproject.exception.HomeworkAlreadyCheckedException;
-import com.jilnash.courseproject.exception.HomeworkFrequentPostingException;
-import com.jilnash.courseproject.exception.StudentCourseAccessException;
-import com.jilnash.courseproject.exception.TaskAlreadyCompletedException;
+import com.jilnash.courseproject.exception.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -74,6 +71,16 @@ public class ExceptionController {
 
     @ExceptionHandler(TaskAlreadyCompletedException.class)
     public ResponseEntity<?> handleTaskAlreadyCompletedException(TaskAlreadyCompletedException ex) {
+        return ResponseEntity.badRequest().body(
+                new AppException(
+                        ex.getMessage(),
+                        HttpStatus.BAD_REQUEST.value()
+                )
+        );
+    }
+
+    @ExceptionHandler(IncompletePrerequisitesException.class)
+    public ResponseEntity<?> handleIncompletePrerequisitesException(IncompletePrerequisitesException ex) {
         return ResponseEntity.badRequest().body(
                 new AppException(
                         ex.getMessage(),

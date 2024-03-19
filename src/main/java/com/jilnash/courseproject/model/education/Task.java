@@ -36,6 +36,14 @@ public class Task {
     @OneToMany(mappedBy = "task")
     private List<TaskAspectLevel> taskAspectLevels;
 
+    @ManyToMany
+    @JoinTable(
+            name = "task_prerequisites",
+            joinColumns = @JoinColumn(name = "task_id"),
+            inverseJoinColumns = @JoinColumn(name = "prerequisite_task_id")
+    )
+    private List<Task> prerequisites;
+
     @Column(name = "created_at")
     @CreationTimestamp
     private Date createdAt;

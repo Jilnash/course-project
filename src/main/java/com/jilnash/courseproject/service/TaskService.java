@@ -27,6 +27,7 @@ public class TaskService {
         task.setVideoLink(taskDTO.getVideoLink());
         task.setCourse(courseService.getCourse(taskDTO.getCourseId()));
         task.setCreatedBy(adminService.getAdmin(login));
+        task.setPrerequisites(taskDTO.getPrerequisites().stream().map(this::getTask).toList());
 
         return taskRepo.save(task);
     }
@@ -34,7 +35,7 @@ public class TaskService {
     public Task getTask(Long id) {
         return taskRepo
                 .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Task not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Task " + id + " not found"));
     }
 
     public boolean updateTask(Long id, TaskDTO taskDTO, String login) {
@@ -45,6 +46,7 @@ public class TaskService {
         task.setVideoLink(taskDTO.getVideoLink());
         task.setCourse(courseService.getCourse(taskDTO.getCourseId()));
         task.setLastUpdatedBy(adminService.getAdmin(login));
+        task.setPrerequisites(taskDTO.getPrerequisites().stream().map(this::getTask).toList());
 
         taskRepo.save(task);
         return true;
