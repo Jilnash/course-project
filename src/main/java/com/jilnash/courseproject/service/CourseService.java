@@ -129,7 +129,13 @@ public class CourseService {
         return taskService.createTask(taskDTO, login);
     }
 
-    public boolean updateCourseTask(Long taskId, TaskDTO taskDTO, String login) {
+    public boolean updateCourseTask(Long courseId, Long taskId, TaskDTO taskDTO, String login) {
+
+        Course course = getCourse(courseId);
+
+        course.setUpdatedBy(adminService.getAdmin(login));
+
+        courseRepo.save(course);
 
         return taskService.updateTask(taskId, taskDTO, login);
     }

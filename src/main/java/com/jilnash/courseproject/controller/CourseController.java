@@ -137,7 +137,7 @@ public class CourseController {
                 new AppResponse(
                         "Task updated successfully",
                         200,
-                        courseService.updateCourseTask(taskId, taskDTO, adminLogin)
+                        courseService.updateCourseTask(id, taskId, taskDTO, adminLogin)
                 )
         );
     }
