@@ -1,8 +1,7 @@
 package com.jilnash.courseproject.dto.request.education;
 
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -22,5 +21,9 @@ public class TaskDTO {
     private String videoLink;
 
     @NotNull(message = "Prerequisites cannot be null")
-    private List<Long> prerequisites;
+    private List<@Positive(message = "prereq id must by positive") Long> prerequisites;
+
+    @NotNull(message = "Task aspect levels cannot be null")
+    @NotEmpty(message = "Task aspect levels cannot be empty")
+    private List<@Valid TaskAspectLevelDTO> taskAspectLevels;
 }

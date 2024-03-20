@@ -129,7 +129,7 @@ public class CourseController {
     @PatchMapping("/{id}/tasks/{taskId}")
     public ResponseEntity<?> updateTaskInCourse(@PathVariable Long id,
                                                 @PathVariable Long taskId,
-                                                @RequestBody TaskDTO taskDTO) {
+                                                @Valid @RequestBody TaskDTO taskDTO) {
 
         String adminLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 

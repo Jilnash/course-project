@@ -33,7 +33,7 @@ public class Task {
 
     private String videoLink;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<TaskAspectLevel> taskAspectLevels;
 
     @ManyToMany
