@@ -46,7 +46,7 @@ public class CourseService {
     public Course getCourse(Long id) {
         return courseRepo
                 .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Course not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Course with id: " + id + " not found"));
     }
 
     public Course createCourse(CourseDTO courseDTO, String login) {
@@ -78,7 +78,7 @@ public class CourseService {
 
         Course course = getCourse(courseId);
 
-        Student student = studentService.getStudent(userService.findByLogin(username).get());
+        Student student = studentService.getStudent(username);
 
         if (studentService.hasAccessToCourse(student.getId(), courseId))
             throw new StudentCourseAccessException("You already have access to this course");

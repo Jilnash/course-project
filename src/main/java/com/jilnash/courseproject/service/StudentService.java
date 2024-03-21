@@ -3,7 +3,6 @@ package com.jilnash.courseproject.service;
 import com.jilnash.courseproject.dto.request.participants.StudentDTO;
 import com.jilnash.courseproject.model.education.Task;
 import com.jilnash.courseproject.model.participants.Student;
-import com.jilnash.courseproject.model.participants.User;
 import com.jilnash.courseproject.repo.access.StudentCourseAccessRepo;
 import com.jilnash.courseproject.repo.participants.StudentRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,19 +29,13 @@ public class StudentService {
     public Student getStudent(Long id) {
         return studentRepo
                 .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Student not found"));
-    }
-
-    public Student getStudent(User user) {
-        return studentRepo
-                .getByUser(user)
-                .orElseThrow(() -> new UsernameNotFoundException("Student not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Student with id: " + id + " not found"));
     }
 
     public Student getStudent(String login) {
         return studentRepo
                 .getByUserLogin(login)
-                .orElseThrow(() -> new UsernameNotFoundException("Student not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Student with login: " + login + " not found"));
     }
 
     public Student createStudent(StudentDTO studentDTO) {

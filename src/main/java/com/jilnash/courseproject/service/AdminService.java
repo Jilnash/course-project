@@ -15,6 +15,6 @@ public class AdminService {
     public Admin getAdmin(String login) {
         return adminRepo
                 .findByUserLogin(login)
-                .orElseThrow(() -> new UsernameNotFoundException("Admin not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Admin with login: " + login + " not found"));
     }
 }

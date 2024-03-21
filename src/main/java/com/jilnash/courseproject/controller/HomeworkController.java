@@ -71,7 +71,7 @@ public class HomeworkController {
                 .ok()
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"audio.mpeg\"")
-                .body(homeworkService.getHomeworkAudioById(id).getContentAsByteArray());
+                .body(homeworkService.getHomeworkAudio(id).getContentAsByteArray());
     }
 
     @PutMapping("{id}/response")

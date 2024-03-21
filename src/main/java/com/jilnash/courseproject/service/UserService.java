@@ -14,12 +14,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,10 +32,23 @@ public class UserService implements UserDetailsService {
     @Autowired
     StudentService studentService;
 
-    PasswordEncoder encoder = new BCryptPasswordEncoder();
+    @Autowired
+    PasswordEncoder encoder;
 
-    public Optional<User> findByLogin(String login) {
-        return userRepo.findByLogin(login);
+    public User getUser(String login) {
+        return userRepo
+                .findByLogin(login)
+                .orElseThrow(() -> new UsernameNotFoundException("User with login: " + login + " not found"));
+    }
+
+    public User getUser(Long id) {
+        return userRepo
+                .findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("User with id: " + id + " not found"));
+    }
+
+    public boolean exists(String login) {
+        return userRepo.existsByLogin(login);
     }
 
     public User createUser(RegisterFormDTO form) {
@@ -53,19 +64,13 @@ public class UserService implements UserDetailsService {
         return userRepo.save(user);
     }
 
-    public User getUserById(Long id) {
-        return userRepo
-                .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-    }
-
     public List<User> getUsers() {
         return userRepo.findAll();
     }
 
     public boolean updateUser(Long id, UserDTO userDTO) {
 
-        User user = getUserById(id);
+        User user = getUser(id);
 
         userRepo.findByLogin(userDTO.getLogin())
                 .ifPresent(u -> {
@@ -112,7 +117,7 @@ public class UserService implements UserDetailsService {
 
     public boolean changeAuthority(Long id, AuthorityListDTO authorityListDTO) {
 
-        User user = getUserById(id);
+        User user = getUser(id);
 
         List<Role> newRoles = authorityListDTO
                 .getAuthorities().stream()
@@ -127,20 +132,14 @@ public class UserService implements UserDetailsService {
 
     public boolean hasAccessToCourse(String username, Long courseId) {
 
-        User user = findByLogin(username).get();
-
-        if (isStudent(user))
-            return studentService.hasAccessToCourse(studentService.getStudent(user).getId(), courseId);
+        if (isStudent(username))
+            return studentService.hasAccessToCourse(studentService.getStudent(username).getId(), courseId);
 
         return true;
     }
 
     public boolean isStudent(String username) {
-        return findByLogin(username).get().getRoles().stream().map(Role::getName).toList().contains("STUDENT");
-    }
-
-    public boolean isStudent(User user) {
-        return user.getRoles().stream().map(Role::getName).toList().contains("STUDENT");
+        return getUser(username).getRoles().stream().map(Role::getName).toList().contains("STUDENT");
     }
 
     @Override

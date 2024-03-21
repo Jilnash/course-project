@@ -42,7 +42,7 @@ public class HwResponseService {
 
     public boolean createResponseToHomework(Long id, HwResponseDTO responseDTO, String teacherLogin) {
 
-        Homework homework = homeworkService.getHomeworkById(id);
+        Homework homework = homeworkService.getHomework(id);
 
         if (homework.getChecked())
             throw new HomeworkAlreadyCheckedException("Homework already checked");

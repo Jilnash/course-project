@@ -36,7 +36,7 @@ public class UserController {
                 new AppResponse(
                         "User found successfully",
                         200,
-                        userService.getUserById(id)
+                        userService.getUser(id)
                 )
         );
     }

@@ -19,16 +19,16 @@ public class TeacherService {
         return teacherRepo.findAll();
     }
 
-    public Teacher getTeacherById(Long id) {
+    public Teacher getTeacher(Long id) {
         return teacherRepo
                 .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Teacher not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Teacher with id: " + id + " not found"));
     }
 
     public Teacher getTeacher(String login) {
         return teacherRepo
                 .findByUserLogin(login)
-                .orElseThrow(() -> new UsernameNotFoundException("Teacher not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Teacher with login: " + login + " not found"));
     }
 
     public Teacher createTeacher(TeacherDTO teacherDTO) {

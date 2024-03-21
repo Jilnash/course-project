@@ -32,8 +32,7 @@ public class AuthService {
 
         try {
             authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(form.getUsername(), form.getPassword()
-                    )
+                    new UsernamePasswordAuthenticationToken(form.getUsername(), form.getPassword())
             );
         } catch (BadCredentialsException e) {
             return new ResponseEntity<>(
@@ -53,8 +52,11 @@ public class AuthService {
             return new ResponseEntity<>("Passwords do not match", HttpStatus.BAD_REQUEST);
         }
 
-        if (userService.findByLogin(form.getLogin()).isPresent()) {
-            return new ResponseEntity<>("User with this login already exists", HttpStatus.BAD_REQUEST);
+        if (userService.exists(form.getLogin())) {
+            return new ResponseEntity<>(
+                    new AppException("User with this login already exists", HttpStatus.BAD_REQUEST.value()),
+                    HttpStatus.BAD_REQUEST
+            );
         }
 
         User user = userService.createUser(form);

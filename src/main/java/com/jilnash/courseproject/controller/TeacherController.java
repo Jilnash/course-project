@@ -45,7 +45,7 @@ public class TeacherController {
                 new AppResponse(
                         "Teacher found successfully",
                         200,
-                        teacherService.getTeacherById(id)
+                        teacherService.getTeacher(id)
                 )
         );
     }

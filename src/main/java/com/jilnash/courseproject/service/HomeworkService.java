@@ -104,17 +104,17 @@ public class HomeworkService {
         return String.format("student%d-task%d-%s-%d", student.getId(), homeworkDTO.getTaskId(), fileType, attempts + 1);
     }
 
-    public Resource getHomeworkAudioById(Long id) {
+    public Resource getHomeworkAudio(Long id) {
 
-        Homework homework = getHomeworkById(id);
+        Homework homework = getHomework(id);
 
         return s3Service.getFileFromS3(homework.getAudioLink(), "audio.mpeg");
     }
 
-    public Homework getHomeworkById(Long id) {
+    public Homework getHomework(Long id) {
         return homeworkRepo
                 .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Homework not found"));
+                .orElseThrow(() -> new UsernameNotFoundException("Homework with id: " + id + " not found"));
     }
 
     public void checkHomework(Homework hw) {
