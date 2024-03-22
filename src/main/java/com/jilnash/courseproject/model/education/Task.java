@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.envers.Audited;
+import org.hibernate.envers.NotAudited;
 
 import java.util.Date;
 import java.util.List;
@@ -13,15 +15,18 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "task")
+@Audited
 public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotAudited
     @ManyToOne
     private Admin createdBy;
 
+    @NotAudited
     @ManyToOne
     private Admin lastUpdatedBy;
 
@@ -33,6 +38,7 @@ public class Task {
 
     private String videoLink;
 
+    @NotAudited
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<TaskAspectLevel> taskAspectLevels;
 
@@ -44,10 +50,12 @@ public class Task {
     )
     private List<Task> prerequisites;
 
+    @NotAudited
     @Column(name = "created_at")
     @CreationTimestamp
     private Date createdAt;
 
+    @NotAudited
     @Column(name = "updated_at")
     @UpdateTimestamp
     private Date updatedAt;
