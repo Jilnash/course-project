@@ -34,5 +34,7 @@ public class AuditRevisionEntity {
 
     private Long entityId;
 
+    private Long courseId;
+
 //    private String entityField;
 }
