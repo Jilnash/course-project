@@ -3,6 +3,7 @@ package com.jilnash.courseproject.service;
 import com.jilnash.courseproject.dto.request.education.TaskDTO;
 import com.jilnash.courseproject.model.education.Task;
 import com.jilnash.courseproject.model.education.TaskAspectLevel;
+import com.jilnash.courseproject.model.participants.Teacher;
 import com.jilnash.courseproject.repo.education.TaskRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -18,19 +19,16 @@ public class TaskService {
     private TaskRepo taskRepo;
 
     @Autowired
-    private AdminService adminService;
-
-    @Autowired
     private CourseService courseService;
 
     @Autowired
     private AspectService aspectService;
 
-    public Task createTask(TaskDTO taskDTO, String login) {
+    public Task createTask(TaskDTO taskDTO, Teacher teacher) {
 
         Task task = new Task();
 
-        task.setCreatedBy(adminService.getAdmin(login));
+        task.setAuthor(teacher);
 
         setCommonFields(task, taskDTO);
 
@@ -45,11 +43,9 @@ public class TaskService {
                 .orElseThrow(() -> new UsernameNotFoundException("Task " + id + " not found"));
     }
 
-    public boolean updateTask(Long id, TaskDTO taskDTO, String login) {
+    public boolean updateTask(Long id, TaskDTO taskDTO) {
 
         Task task = getTask(id);
-
-        task.setLastUpdatedBy(adminService.getAdmin(login));
 
         setCommonFields(task, taskDTO);
 

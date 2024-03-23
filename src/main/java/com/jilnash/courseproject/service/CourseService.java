@@ -4,10 +4,12 @@ import com.jilnash.courseproject.dto.request.education.CourseDTO;
 import com.jilnash.courseproject.dto.request.education.TaskDTO;
 import com.jilnash.courseproject.exception.IncompletePrerequisitesException;
 import com.jilnash.courseproject.exception.StudentCourseAccessException;
+import com.jilnash.courseproject.exception.TeacherCourseAccessException;
 import com.jilnash.courseproject.model.access.StudentCourseAccess;
 import com.jilnash.courseproject.model.education.Course;
 import com.jilnash.courseproject.model.education.Task;
 import com.jilnash.courseproject.model.participants.Student;
+import com.jilnash.courseproject.model.participants.Teacher;
 import com.jilnash.courseproject.repo.access.StudentCourseAccessRepo;
 import com.jilnash.courseproject.repo.education.CourseRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,13 +27,10 @@ public class CourseService {
     private CourseRepo courseRepo;
 
     @Autowired
-    private AdminService adminService;
+    private TeacherService teacherService;
 
     @Autowired
     private TaskService taskService;
-
-    @Autowired
-    private UserService userService;
 
     @Autowired
     private StudentService studentService;
@@ -56,7 +55,7 @@ public class CourseService {
         course.setName(courseDTO.getName());
         course.setDescription(courseDTO.getDescription());
         course.setDuration(courseDTO.getDuration());
-        course.setCreatedBy(adminService.getAdmin(login));
+        course.setAuthor(teacherService.getTeacher(login));
 
         return courseRepo.save(course);
     }
@@ -64,11 +63,14 @@ public class CourseService {
     public boolean updateCourse(Long id, CourseDTO courseDTO, String login) {
 
         Course course = getCourse(id);
+        Teacher teacher = teacherService.getTeacher(login);
+
+        if (!teacherService.checkTeacherCourseAccess(course, teacher))
+            throw new TeacherCourseAccessException("You don't have update access to this course");
 
         course.setName(courseDTO.getName());
         course.setDescription(courseDTO.getDescription());
         course.setDuration(courseDTO.getDuration());
-        course.setUpdatedBy(adminService.getAdmin(login));
 
         courseRepo.save(course);
         return true;
@@ -77,10 +79,9 @@ public class CourseService {
     public boolean purchaseCourse(Long courseId, String username) {
 
         Course course = getCourse(courseId);
-
         Student student = studentService.getStudent(username);
 
-        if (studentService.hasAccessToCourse(student.getId(), courseId))
+        if (!studentService.checkStudentCourseAccess(student, course))
             throw new StudentCourseAccessException("You already have access to this course");
 
         studentCourseAccessRepo.save(
@@ -94,12 +95,9 @@ public class CourseService {
         return true;
     }
 
-    public List<Task> getCourseTasks(Long courseId, String username) {
+    public List<Task> getCourseTasks(Long courseId) {
 
         Course course = getCourse(courseId);
-
-        if (!userService.hasAccessToCourse(username, courseId))
-            throw new StudentCourseAccessException("You don't have access to this course");
 
         return course.getTasks();
     }
@@ -108,42 +106,53 @@ public class CourseService {
 
         Course course = getCourse(courseId);
 
-        if (!userService.hasAccessToCourse(username, courseId))
-            throw new StudentCourseAccessException("You don't have access to this course");
+        if (teacherService.exists(username)) {
 
-        Task task = taskService.getTask(taskId);
+            if (!teacherService.checkTeacherCourseAccess(course, teacherService.getTeacher(username)))
+                throw new TeacherCourseAccessException("You don't have access to this course");
 
-        if (!userService.isStudent(username))
+            return taskService.getTask(taskId);
+        }
+
+        if (studentService.exists(username)) {
+            Student student = studentService.getStudent(username);
+
+            if (!studentService.checkStudentCourseAccess(student, course))
+                throw new StudentCourseAccessException("You don't have access to this course");
+
+            Task task = taskService.getTask(taskId);
+
+            List<Long> completedTasks = student.getCompletedTasks().stream().map(Task::getId).toList();
+            List<Long> prerequisites = task.getPrerequisites().stream().map(Task::getId).toList();
+
+            if (!completedTasks.containsAll(prerequisites))
+                throw new IncompletePrerequisitesException("You should complete all prerequisites first");
+
             return task;
+        }
 
-        List<Long> completedTasks = studentService.getStudent(username).getCompletedTasks().stream().map(Task::getId).toList();
-        List<Long> prerequisites = task.getPrerequisites().stream().map(Task::getId).toList();
-
-        if (completedTasks.containsAll(prerequisites))
-            return task;
-        else
-            throw new IncompletePrerequisitesException("You should complete all prerequisites first");
+        return taskService.getTask(taskId);
     }
 
     public Task createCourseTask(Long courseId, TaskDTO taskDTO, String login) {
 
         Course course = getCourse(courseId);
+        Teacher teacher = teacherService.getTeacher(login);
 
-        course.setUpdatedBy(adminService.getAdmin(login));
+        if (!teacherService.checkTeacherCourseAccess(course, teacher))
+            throw new TeacherCourseAccessException("You don't have access to this course");
 
-        courseRepo.save(course);
-
-        return taskService.createTask(taskDTO, login);
+        return taskService.createTask(taskDTO, teacher);
     }
 
     public boolean updateCourseTask(Long courseId, Long taskId, TaskDTO taskDTO, String login) {
 
         Course course = getCourse(courseId);
+        Teacher teacher = teacherService.getTeacher(login);
 
-        course.setUpdatedBy(adminService.getAdmin(login));
+        if (!teacherService.checkTeacherCourseAccess(course, teacher))
+            throw new TeacherCourseAccessException("You don't have access to this course");
 
-        courseRepo.save(course);
-
-        return taskService.updateTask(taskId, taskDTO, login);
+        return taskService.updateTask(taskId, taskDTO);
     }
 }

@@ -10,4 +10,6 @@ import java.util.Optional;
 public interface TeacherRepo extends JpaRepository<Teacher, Long> {
 
     Optional<Teacher> findByUserLogin(String login);
+
+    Boolean existsByUserLogin(String login);
 }

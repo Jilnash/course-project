@@ -24,16 +24,19 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
 
     @Autowired
-    UserRepo userRepo;
+    private UserRepo userRepo;
 
     @Autowired
-    RoleRepo roleRepo;
+    private RoleRepo roleRepo;
 
     @Autowired
-    StudentService studentService;
+    private StudentService studentService;
 
     @Autowired
-    PasswordEncoder encoder;
+    private TeacherService teacherService;
+
+    @Autowired
+    private PasswordEncoder encoder;
 
     public User getUser(String login) {
         return userRepo
@@ -128,18 +131,6 @@ public class UserService implements UserDetailsService {
 
         userRepo.save(user);
         return true;
-    }
-
-    public boolean hasAccessToCourse(String username, Long courseId) {
-
-        if (isStudent(username))
-            return studentService.hasAccessToCourse(studentService.getStudent(username).getId(), courseId);
-
-        return true;
-    }
-
-    public boolean isStudent(String username) {
-        return getUser(username).getRoles().stream().map(Role::getName).toList().contains("STUDENT");
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.participants.StudentDTO;
+import com.jilnash.courseproject.model.education.Course;
 import com.jilnash.courseproject.model.education.Task;
 import com.jilnash.courseproject.model.participants.Student;
 import com.jilnash.courseproject.repo.access.StudentCourseAccessRepo;
@@ -38,6 +39,11 @@ public class StudentService {
                 .orElseThrow(() -> new UsernameNotFoundException("Student with login: " + login + " not found"));
     }
 
+    public Boolean exists(String login) {
+
+        return studentRepo.existsByUserLogin(login);
+    }
+
     public Student createStudent(StudentDTO studentDTO) {
 
         Student student = new Student();
@@ -62,10 +68,10 @@ public class StudentService {
         return true;
     }
 
-    public boolean hasAccessToCourse(Long studentId, Long courseId) {
-        return studentCourseAccessRepo.existsByStudentIdAndCourseIdAndEndDateAfter(
-                studentId,
-                courseId,
+    public boolean checkStudentCourseAccess(Student student, Course course) {
+        return studentCourseAccessRepo.existsByStudentAndCourseAndEndDateAfter(
+                student,
+                course,
                 Date.valueOf(LocalDate.now())
         );
     }

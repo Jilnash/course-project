@@ -1,6 +1,7 @@
 package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.participants.TeacherDTO;
+import com.jilnash.courseproject.model.education.Course;
 import com.jilnash.courseproject.model.participants.Teacher;
 import com.jilnash.courseproject.repo.participants.TeacherRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,10 @@ public class TeacherService {
         return teacherRepo
                 .findByUserLogin(login)
                 .orElseThrow(() -> new UsernameNotFoundException("Teacher with login: " + login + " not found"));
+    }
+
+    public Boolean exists(String login) {
+        return teacherRepo.existsByUserLogin(login);
     }
 
     public Teacher createTeacher(TeacherDTO teacherDTO) {
@@ -67,5 +72,17 @@ public class TeacherService {
         teacherRepo.save(teacher);
 
         return true;
+    }
+
+    public boolean checkTeacherCourseAccess(Course course, Teacher teacher) {
+
+        if (course.getAuthor().getId().equals(teacher.getId()))
+            return true;
+
+        return course
+                .getTeachers()
+                .stream()
+                .map(Teacher::getId)
+                .anyMatch(id -> id.equals(teacher.getId()));
     }
 }

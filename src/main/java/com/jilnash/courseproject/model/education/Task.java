@@ -1,7 +1,7 @@
 package com.jilnash.courseproject.model.education;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.jilnash.courseproject.model.participants.Admin;
+import com.jilnash.courseproject.model.participants.Teacher;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -24,11 +24,7 @@ public class Task {
 
     @NotAudited
     @ManyToOne
-    private Admin createdBy;
-
-    @NotAudited
-    @ManyToOne
-    private Admin lastUpdatedBy;
+    private Teacher author;
 
     @ManyToOne
     @JsonIgnore

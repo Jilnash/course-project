@@ -31,13 +31,13 @@ public class CourseController {
     @PutMapping
     public ResponseEntity<?> createCourse(@Valid @RequestBody CourseDTO courseDTO) {
 
-        String adminLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        String teacherLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
         return ResponseEntity.ok(
                 new AppResponse(
                         "Course created successfully",
                         201,
-                        courseService.createCourse(courseDTO, adminLogin)
+                        courseService.createCourse(courseDTO, teacherLogin)
                 )
         );
     }
@@ -57,13 +57,13 @@ public class CourseController {
     public ResponseEntity<?> updateCourse(@PathVariable Long id,
                                           @Valid @RequestBody CourseDTO courseDTO) {
 
-        String adminLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        String teacherLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
         return ResponseEntity.ok(
                 new AppResponse(
                         "Course updated successfully",
                         200,
-                        courseService.updateCourse(id, courseDTO, adminLogin)
+                        courseService.updateCourse(id, courseDTO, teacherLogin)
                 )
         );
     }
@@ -85,13 +85,11 @@ public class CourseController {
     @GetMapping("/{id}/tasks")
     public ResponseEntity<?> getTasksInCourse(@PathVariable Long id) {
 
-        String username = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-
         return ResponseEntity.ok(
                 new AppResponse(
                         "List of tasks in course",
                         200,
-                        courseService.getCourseTasks(id, username)
+                        courseService.getCourseTasks(id)
                 )
         );
     }
@@ -100,13 +98,13 @@ public class CourseController {
     public ResponseEntity<?> createTaskInCourse(@PathVariable Long id,
                                                 @Valid @RequestBody TaskDTO taskDTO) {
 
-        String adminLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        String teacherLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
         return ResponseEntity.ok(
                 new AppResponse(
                         "Task created successfully",
                         201,
-                        courseService.createCourseTask(id, taskDTO, adminLogin)
+                        courseService.createCourseTask(id, taskDTO, teacherLogin)
                 )
         );
     }
@@ -131,13 +129,13 @@ public class CourseController {
                                                 @PathVariable Long taskId,
                                                 @Valid @RequestBody TaskDTO taskDTO) {
 
-        String adminLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
+        String teacherLogin = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
 
         return ResponseEntity.ok(
                 new AppResponse(
                         "Task updated successfully",
                         200,
-                        courseService.updateCourseTask(id, taskId, taskDTO, adminLogin)
+                        courseService.updateCourseTask(id, taskId, taskDTO, teacherLogin)
                 )
         );
     }

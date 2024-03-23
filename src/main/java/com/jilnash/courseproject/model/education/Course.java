@@ -1,6 +1,6 @@
 package com.jilnash.courseproject.model.education;
 
-import com.jilnash.courseproject.model.participants.Admin;
+import com.jilnash.courseproject.model.participants.Teacher;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -29,12 +29,18 @@ public class Course {
 
     @NotAudited
     @ManyToOne
-    private Admin createdBy;
+    private Teacher author;
 
     @NotAudited
-    @ManyToOne
-    private Admin updatedBy;
+    @ManyToMany
+    @JoinTable(
+            name = "teacher_course_access",
+            joinColumns = @JoinColumn(name = "course_id"),
+            inverseJoinColumns = @JoinColumn(name = "teacher_id")
+    )
+    private List<Teacher> teachers;
 
+    @NotAudited
     @OneToMany(mappedBy = "course")
     private List<Task> tasks;
 

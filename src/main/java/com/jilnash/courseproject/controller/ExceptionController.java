@@ -88,4 +88,14 @@ public class ExceptionController {
                 )
         );
     }
+
+    @ExceptionHandler(TeacherCourseAccessException.class)
+    public ResponseEntity<?> handleTeacherCourseAccessException(TeacherCourseAccessException ex) {
+        return ResponseEntity.badRequest().body(
+                new AppException(
+                        ex.getMessage(),
+                        HttpStatus.BAD_REQUEST.value()
+                )
+        );
+    }
 }
