@@ -17,6 +17,10 @@ import org.springframework.stereotype.Service;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 @Service
 public class HomeworkService {
@@ -67,14 +71,28 @@ public class HomeworkService {
         homework.setStudent(student);
         homework.setTask(taskService.getTask(homeworkDTO.getTaskId()));
 
-        String audioLink = generateLink(homeworkDTO, student, "audio");
-        String videoLink = generateLink(homeworkDTO, student, "video");
+        ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        s3Service.putFileToS3(homeworkDTO.getAudio(), audioLink);
-        s3Service.putFileToS3(homeworkDTO.getVideo(), videoLink);
+        Future<String> audioLinkFuture = executorService.submit(() -> {
+            String audioLink = generateLink(homeworkDTO, student, "audio");
+            s3Service.putFileToS3(homeworkDTO.getAudio(), audioLink);
+            return audioLink;
+        });
 
-        homework.setAudioLink(audioLink);
-        homework.setVideoLink(videoLink);
+        Future<String> videoLinkFuture = executorService.submit(() -> {
+            String videoLink = generateLink(homeworkDTO, student, "video");
+            s3Service.putFileToS3(homeworkDTO.getVideo(), videoLink);
+            return videoLink;
+        });
+
+        try {
+            homework.setAudioLink(audioLinkFuture.get());
+            homework.setVideoLink(videoLinkFuture.get());
+        } catch (InterruptedException | ExecutionException e) {
+            throw new RuntimeException("Error while uploading files");
+        }
+
+        executorService.shutdown();
 
         return homeworkRepo.save(homework);
     }
