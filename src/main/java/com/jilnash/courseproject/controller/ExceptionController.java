@@ -98,4 +98,14 @@ public class ExceptionController {
                 )
         );
     }
+
+    @ExceptionHandler(NoTaskWIthNoPrerequisitesException.class)
+    public ResponseEntity<?> handleNoTaskWithNoPrerequisitesException(NoTaskWIthNoPrerequisitesException ex) {
+        return ResponseEntity.badRequest().body(
+                new AppException(
+                        ex.getMessage(),
+                        HttpStatus.BAD_REQUEST.value()
+                )
+        );
+    }
 }

@@ -3,6 +3,7 @@ package com.jilnash.courseproject.service;
 import com.jilnash.courseproject.dto.request.education.CourseDTO;
 import com.jilnash.courseproject.dto.request.education.TaskDTO;
 import com.jilnash.courseproject.exception.IncompletePrerequisitesException;
+import com.jilnash.courseproject.exception.NoTaskWIthNoPrerequisitesException;
 import com.jilnash.courseproject.exception.StudentCourseAccessException;
 import com.jilnash.courseproject.exception.TeacherCourseAccessException;
 import com.jilnash.courseproject.model.access.StudentCourseAccess;
@@ -137,17 +138,29 @@ public class CourseService {
     public Task createCourseTask(Long courseId, TaskDTO taskDTO, String login) {
 
         Teacher teacher = teacherService.getTeacher(login);
+        Course course = getCourse(courseId);
 
-        if (!teacherService.checkTeacherCourseAccess(getCourse(courseId), teacher))
+        if (!teacherService.checkTeacherCourseAccess(course, teacher))
             throw new TeacherCourseAccessException("You don't have access to this course");
 
-        return taskService.createTask(taskDTO, teacher);
+        if (course.getTasks().isEmpty() && !taskDTO.getPrerequisites().isEmpty())
+            throw new NoTaskWIthNoPrerequisitesException("First task should have no prerequisites");
+
+        return taskService.createTask(course, taskDTO, teacher);
     }
 
     public boolean updateCourseTask(Long courseId, Long taskId, TaskDTO taskDTO, String login) {
 
-        if (!teacherService.checkTeacherCourseAccess(getCourse(courseId), teacherService.getTeacher(login)))
+        Course course = getCourse(courseId);
+
+        if (!teacherService.checkTeacherCourseAccess(course, teacherService.getTeacher(login)))
             throw new TeacherCourseAccessException("You don't have access to this course");
+
+        if (
+                !taskDTO.getPrerequisites().isEmpty() &&
+                course.getTasks().stream().noneMatch(task -> task.getPrerequisites().isEmpty())
+        )
+            throw new NoTaskWIthNoPrerequisitesException("There should be at least one task with no prerequisites");
 
         return taskService.updateTask(taskId, taskDTO);
     }

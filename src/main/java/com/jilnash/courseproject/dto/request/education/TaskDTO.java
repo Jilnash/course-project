@@ -11,10 +11,6 @@ import java.util.List;
 @AllArgsConstructor
 public class TaskDTO {
 
-    @NotNull(message = "Course id cannot be null")
-    @PositiveOrZero(message = "Course id must be positive")
-    private Long courseId;
-
     @NotNull(message = "Title cannot be null")
     @NotEmpty(message = "Title cannot be empty")
     @Size(min = 10, max = 30, message = "Title must be between 10 and 30 characters")

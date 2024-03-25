@@ -1,6 +1,7 @@
 package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.education.TaskDTO;
+import com.jilnash.courseproject.model.education.Course;
 import com.jilnash.courseproject.model.education.Task;
 import com.jilnash.courseproject.model.education.TaskAspectLevel;
 import com.jilnash.courseproject.model.participants.Teacher;
@@ -19,16 +20,14 @@ public class TaskService {
     private TaskRepo taskRepo;
 
     @Autowired
-    private CourseService courseService;
-
-    @Autowired
     private AspectService aspectService;
 
-    public Task createTask(TaskDTO taskDTO, Teacher teacher) {
+    public Task createTask(Course course, TaskDTO taskDTO, Teacher teacher) {
 
         Task task = new Task();
 
         task.setAuthor(teacher);
+        task.setCourse(course);
 
         setCommonFields(task, taskDTO);
 
@@ -43,9 +42,9 @@ public class TaskService {
                 .orElseThrow(() -> new UsernameNotFoundException("Task " + id + " not found"));
     }
 
-    public boolean updateTask(Long id, TaskDTO taskDTO) {
+    public boolean updateTask(Long taskId, TaskDTO taskDTO) {
 
-        Task task = getTask(id);
+        Task task = getTask(taskId);
 
         setCommonFields(task, taskDTO);
 
@@ -60,7 +59,6 @@ public class TaskService {
         task.setTitle(taskDTO.getTitle());
         task.setDescription(taskDTO.getDescription());
         task.setVideoLink(taskDTO.getVideoLink());
-        task.setCourse(courseService.getCourse(taskDTO.getCourseId()));
         task.setPrerequisites(taskDTO.getPrerequisites().stream().map(this::getTask).collect(Collectors.toList()));
     }
 
