@@ -32,7 +32,7 @@ public class TaskService {
 
         setCommonFields(task, taskDTO);
 
-        task.setTaskAspectLevels(getTaskAspectLevels(taskDTO));
+        task.setTaskAspectLevels(getTaskAspectLevels(task, taskDTO));
 
         return taskRepo.save(task);
     }
@@ -50,7 +50,7 @@ public class TaskService {
         setCommonFields(task, taskDTO);
 
         task.getTaskAspectLevels().clear();
-        task.getTaskAspectLevels().addAll(getTaskAspectLevels(taskDTO));
+        task.getTaskAspectLevels().addAll(getTaskAspectLevels(task, taskDTO));
 
         taskRepo.save(task);
         return true;
@@ -64,12 +64,12 @@ public class TaskService {
         task.setPrerequisites(taskDTO.getPrerequisites().stream().map(this::getTask).collect(Collectors.toList()));
     }
 
-    private List<TaskAspectLevel> getTaskAspectLevels(TaskDTO taskDTO) {
+    private List<TaskAspectLevel> getTaskAspectLevels(Task task, TaskDTO taskDTO) {
         return taskDTO.getTaskAspectLevels().stream()
                 .map(dto ->
                         new TaskAspectLevel(
                                 aspectService.getAspect(dto.getAspectId()),
-                                null,
+                                task,
                                 dto.getLevel()
                         )
                 ).toList();
