@@ -2,14 +2,18 @@ package com.jilnash.courseproject.model.participants;
 
 import com.jilnash.courseproject.model.education.Task;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 import java.util.List;
 
-@Data
+@Getter
+@Setter
+@ToString(exclude = {"completedTasks"})
 @Entity
 @Table(name = "student")
 public class Student {
@@ -35,7 +39,7 @@ public class Student {
     @UpdateTimestamp
     private Date updatedAt;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "student_task_complete",
             joinColumns = @JoinColumn(name = "student_id"),

@@ -1,13 +1,18 @@
 package com.jilnash.courseproject.model.participants;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
-@Data
+
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "admin")
 public class Admin {
@@ -27,7 +32,7 @@ public class Admin {
     @CreationTimestamp
     private Date createdAt;
 
-    @Column(name = " updated_at")
+    @Column(name = "updated_at")
     @UpdateTimestamp
     private Date updatedAt;
 

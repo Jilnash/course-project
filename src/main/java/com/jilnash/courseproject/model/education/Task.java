@@ -3,7 +3,7 @@ package com.jilnash.courseproject.model.education;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jilnash.courseproject.model.participants.Teacher;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
@@ -12,7 +12,11 @@ import org.hibernate.envers.NotAudited;
 import java.util.Date;
 import java.util.List;
 
-@Data
+
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString(exclude = {"taskAspectLevels", "prerequisites"})
 @Entity
 @Table(name = "task")
 @Audited
@@ -20,13 +24,16 @@ public class Task {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Long id;
 
     @NotAudited
     @ManyToOne
+    @JoinColumn
     private Teacher author;
 
     @ManyToOne
+    @JoinColumn
     @JsonIgnore
     private Course course;
 
@@ -37,7 +44,7 @@ public class Task {
     private String videoLink;
 
     @NotAudited
-    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaskAspectLevel> taskAspectLevels;
 
     @ManyToMany

@@ -2,7 +2,9 @@ package com.jilnash.courseproject.model.education;
 
 import com.jilnash.courseproject.model.participants.Teacher;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.envers.Audited;
@@ -11,7 +13,10 @@ import org.hibernate.envers.NotAudited;
 import java.util.Date;
 import java.util.List;
 
-@Data
+
+@Getter
+@Setter
+@ToString(exclude = {"teachers", "tasks"})
 @Entity
 @Table(name = "course")
 @Audited
@@ -19,6 +24,7 @@ public class Course {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false)
     private Long id;
 
     private String name;
@@ -29,6 +35,7 @@ public class Course {
 
     @NotAudited
     @ManyToOne
+    @JoinColumn
     private Teacher author;
 
     @NotAudited

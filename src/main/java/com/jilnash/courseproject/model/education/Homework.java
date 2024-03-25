@@ -2,13 +2,17 @@ package com.jilnash.courseproject.model.education;
 
 import com.jilnash.courseproject.model.participants.Student;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "homework")
 public class Homework {

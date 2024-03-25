@@ -2,13 +2,18 @@ package com.jilnash.courseproject.model.education;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+
+@Getter
+@Setter
+@NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "task_aspect_level")
-@NoArgsConstructor
 public class TaskAspectLevel {
 
     @Id

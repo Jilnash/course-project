@@ -1,10 +1,14 @@
 package com.jilnash.courseproject.model.education;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 
-@Data
+@Getter
+@Setter
+@ToString
 @Entity
 @Table(name = "timerange")
 @NoArgsConstructor
