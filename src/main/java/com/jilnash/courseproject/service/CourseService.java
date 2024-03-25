@@ -112,7 +112,7 @@ public class CourseService {
             if (!teacherService.checkTeacherCourseAccess(course, teacherService.getTeacher(username)))
                 throw new TeacherCourseAccessException("You don't have access to this course");
 
-            return taskService.getTask(taskId);
+            return taskService.getTask(courseId, taskId);
         }
 
         if (studentService.exists(username)) {
@@ -121,7 +121,7 @@ public class CourseService {
             if (!studentService.checkStudentCourseAccess(student, course))
                 throw new StudentCourseAccessException("You don't have access to this course");
 
-            Task task = taskService.getTask(taskId);
+            Task task = taskService.getTask(courseId, taskId);
 
             List<Long> completedTasks = student.getCompletedTasks().stream().map(Task::getId).toList();
             List<Long> prerequisites = task.getPrerequisites().stream().map(Task::getId).toList();
@@ -132,7 +132,7 @@ public class CourseService {
             return task;
         }
 
-        return taskService.getTask(taskId);
+        return taskService.getTask(courseId, taskId);
     }
 
     public Task createCourseTask(Long courseId, TaskDTO taskDTO, String login) {
@@ -162,6 +162,6 @@ public class CourseService {
         )
             throw new NoTaskWIthNoPrerequisitesException("There should be at least one task with no prerequisites");
 
-        return taskService.updateTask(taskId, taskDTO);
+        return taskService.updateTask(course, taskId, taskDTO);
     }
 }

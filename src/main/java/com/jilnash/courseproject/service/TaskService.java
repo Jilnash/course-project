@@ -36,15 +36,21 @@ public class TaskService {
         return taskRepo.save(task);
     }
 
-    public Task getTask(Long id) {
+    public Task getTask(Long taskId) {
         return taskRepo
-                .findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Task " + id + " not found"));
+                .findById(taskId)
+                .orElseThrow(() -> new UsernameNotFoundException("There is no task with id: " + taskId));
     }
 
-    public boolean updateTask(Long taskId, TaskDTO taskDTO) {
+    public Task getTask(Long courseId, Long taskId) {
+        return taskRepo
+                .findByIdAndCourseId(taskId, courseId)
+                .orElseThrow(() -> new UsernameNotFoundException("There is no task with id: " + taskId + " in course with id: " + courseId));
+    }
 
-        Task task = getTask(taskId);
+    public boolean updateTask(Course course, Long taskId, TaskDTO taskDTO) {
+
+        Task task = getTask(course.getId(), taskId);
 
         setCommonFields(task, taskDTO);
 
