@@ -15,6 +15,11 @@ public class TaskDTO {
     @PositiveOrZero(message = "Course id must be positive")
     private Long courseId;
 
+    @NotNull(message = "Title cannot be null")
+    @NotEmpty(message = "Title cannot be empty")
+    @Size(min = 10, max = 30, message = "Title must be between 10 and 30 characters")
+    private String title;
+
     @Size(min = 20, max = 1000, message = "Description must be between 20 and 1000 characters")
     private String description;
 

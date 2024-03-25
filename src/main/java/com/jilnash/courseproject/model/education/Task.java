@@ -30,6 +30,8 @@ public class Task {
     @JsonIgnore
     private Course course;
 
+    private String title;
+
     private String description;
 
     private String videoLink;

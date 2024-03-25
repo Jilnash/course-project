@@ -57,6 +57,7 @@ public class TaskService {
     }
 
     private void setCommonFields(Task task, TaskDTO taskDTO) {
+        task.setTitle(taskDTO.getTitle());
         task.setDescription(taskDTO.getDescription());
         task.setVideoLink(taskDTO.getVideoLink());
         task.setCourse(courseService.getCourse(taskDTO.getCourseId()));

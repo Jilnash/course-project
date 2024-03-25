@@ -136,10 +136,9 @@ public class CourseService {
 
     public Task createCourseTask(Long courseId, TaskDTO taskDTO, String login) {
 
-        Course course = getCourse(courseId);
         Teacher teacher = teacherService.getTeacher(login);
 
-        if (!teacherService.checkTeacherCourseAccess(course, teacher))
+        if (!teacherService.checkTeacherCourseAccess(getCourse(courseId), teacher))
             throw new TeacherCourseAccessException("You don't have access to this course");
 
         return taskService.createTask(taskDTO, teacher);
@@ -147,10 +146,7 @@ public class CourseService {
 
     public boolean updateCourseTask(Long courseId, Long taskId, TaskDTO taskDTO, String login) {
 
-        Course course = getCourse(courseId);
-        Teacher teacher = teacherService.getTeacher(login);
-
-        if (!teacherService.checkTeacherCourseAccess(course, teacher))
+        if (!teacherService.checkTeacherCourseAccess(getCourse(courseId), teacherService.getTeacher(login)))
             throw new TeacherCourseAccessException("You don't have access to this course");
 
         return taskService.updateTask(taskId, taskDTO);
