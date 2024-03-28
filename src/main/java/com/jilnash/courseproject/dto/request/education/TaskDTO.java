@@ -21,6 +21,12 @@ public class TaskDTO {
 
     private String videoLink;
 
+    @NotNull(message = "Audio required cannot be null")
+    private Boolean audioRequired;
+
+    @NotNull(message = "Video required cannot be null")
+    private Boolean videoRequired;
+
     @NotNull(message = "Prerequisites cannot be null")
     private List<@Positive(message = "prereq id must by positive") Long> prerequisites;
 

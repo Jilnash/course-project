@@ -43,6 +43,10 @@ public class Task {
 
     private String videoLink;
 
+    private Boolean audioRequired;
+
+    private Boolean videoRequired;
+
     @NotAudited
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaskAspectLevel> taskAspectLevels;

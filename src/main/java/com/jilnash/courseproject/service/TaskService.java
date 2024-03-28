@@ -62,9 +62,14 @@ public class TaskService {
     }
 
     private void setCommonFields(Task task, TaskDTO taskDTO) {
+
+        checkAudioAndVideoNotRequired(taskDTO);
+
         task.setTitle(taskDTO.getTitle());
         task.setDescription(taskDTO.getDescription());
         task.setVideoLink(taskDTO.getVideoLink());
+        task.setAudioRequired(taskDTO.getAudioRequired());
+        task.setVideoRequired(taskDTO.getVideoRequired());
         task.setPrerequisites(taskDTO.getPrerequisites().stream().map(this::getTask).collect(Collectors.toList()));
     }
 
@@ -77,5 +82,10 @@ public class TaskService {
                                 dto.getLevel()
                         )
                 ).toList();
+    }
+
+    private void checkAudioAndVideoNotRequired(TaskDTO taskDTO) {
+        if (!taskDTO.getAudioRequired() && !taskDTO.getVideoRequired())
+            throw new IllegalArgumentException("At least one of audio or video must be required");
     }
 }
