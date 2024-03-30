@@ -82,7 +82,7 @@ public class CourseService {
         Course course = getCourse(courseId);
         Student student = studentService.getStudent(username);
 
-        if (!studentService.checkStudentCourseAccess(student, course))
+        if (studentService.checkStudentCourseAccess(student, course))
             throw new StudentCourseAccessException("You already have access to this course");
 
         studentCourseAccessRepo.save(

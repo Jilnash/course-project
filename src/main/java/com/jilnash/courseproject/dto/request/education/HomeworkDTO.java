@@ -14,9 +14,7 @@ public class HomeworkDTO {
     @PositiveOrZero(message = "Task id must be positive")
     private Long taskId;
 
-    @NotNull(message = "Audio file is required")
     private MultipartFile audio;
 
-    @NotNull(message = "Video file is required")
     private MultipartFile video;
 }

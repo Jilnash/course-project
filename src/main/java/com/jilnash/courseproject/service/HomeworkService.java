@@ -63,33 +63,45 @@ public class HomeworkService {
     public Homework createHomework(HomeworkDTO homeworkDTO, String studentLogin) throws Exception {
 
         Student student = studentService.getStudent(studentLogin);
+        Task task = taskService.getTask(homeworkDTO.getTaskId());
 
+        checkNecessaryFilesProvided(homeworkDTO, task);
         checkTaskCompletion(homeworkDTO, student);
         checkHomeworkPostingFrequency(homeworkDTO, student);
 
         Homework homework = new Homework();
         homework.setStudent(student);
-        homework.setTask(taskService.getTask(homeworkDTO.getTaskId()));
+        homework.setTask(task);
 
         ExecutorService executorService = Executors.newFixedThreadPool(2);
 
-        Future<String> audioLinkFuture = executorService.submit(() -> {
-            String audioLink = generateLink(homeworkDTO, student, "audio");
-            s3Service.putFileToS3(homeworkDTO.getAudio(), audioLink);
-            return audioLink;
-        });
+        if (task.getAudioRequired()) {
+            Future<String> audioLinkFuture = executorService.submit(() -> {
+                String audioLink = generateLink(homeworkDTO, student, "audio");
+                s3Service.putFileToS3(homeworkDTO.getAudio(), audioLink);
+                return audioLink;
+            });
 
-        Future<String> videoLinkFuture = executorService.submit(() -> {
-            String videoLink = generateLink(homeworkDTO, student, "video");
-            s3Service.putFileToS3(homeworkDTO.getVideo(), videoLink);
-            return videoLink;
-        });
+            try {
+                homework.setAudioLink(audioLinkFuture.get());
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException("Error while uploading files");
+            }
 
-        try {
-            homework.setAudioLink(audioLinkFuture.get());
-            homework.setVideoLink(videoLinkFuture.get());
-        } catch (InterruptedException | ExecutionException e) {
-            throw new RuntimeException("Error while uploading files");
+        }
+
+        if (task.getVideoRequired()) {
+            Future<String> videoLinkFuture = executorService.submit(() -> {
+                String videoLink = generateLink(homeworkDTO, student, "video");
+                s3Service.putFileToS3(homeworkDTO.getVideo(), videoLink);
+                return videoLink;
+            });
+
+            try {
+                homework.setVideoLink(videoLinkFuture.get());
+            } catch (InterruptedException | ExecutionException e) {
+                throw new RuntimeException("Error while uploading files");
+            }
         }
 
         executorService.shutdown();
@@ -120,6 +132,14 @@ public class HomeworkService {
     private String generateLink(HomeworkDTO homeworkDTO, Student student, String fileType) {
         Integer attempts = homeworkRepo.countByStudentIdAndTaskId(student.getId(), homeworkDTO.getTaskId());
         return String.format("student%d-task%d-%s-%d", student.getId(), homeworkDTO.getTaskId(), fileType, attempts + 1);
+    }
+
+    private void checkNecessaryFilesProvided(HomeworkDTO homeworkDTO, Task task) {
+        if (task.getAudioRequired() && homeworkDTO.getAudio() == null)
+            throw new RuntimeException("Audio file are required");
+
+        if (task.getVideoRequired() && homeworkDTO.getVideo() == null)
+            throw new RuntimeException("Video file are required");
     }
 
     public Resource getHomeworkAudio(Long id) {
