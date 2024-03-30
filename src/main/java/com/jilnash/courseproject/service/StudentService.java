@@ -76,6 +76,10 @@ public class StudentService {
         );
     }
 
+    public boolean checkStudentTaskPrerequisitesCompleted(Student student, Task task) {
+        return student.getCompletedTasks().containsAll(task.getPrerequisites());
+    }
+
     public void completeTask(Student student, Task task) {
 
         student.getCompletedTasks().add(task);

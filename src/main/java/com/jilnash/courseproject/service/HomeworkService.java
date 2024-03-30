@@ -68,6 +68,7 @@ public class HomeworkService {
         checkNecessaryFilesProvided(homeworkDTO, task);
         checkTaskCompletion(homeworkDTO, student);
         checkHomeworkPostingFrequency(homeworkDTO, student, task);
+        checkAllPrerequisitesCompleted(task, student);
 
         Homework homework = new Homework();
         homework.setStudent(student);
@@ -143,6 +144,11 @@ public class HomeworkService {
 
         if (task.getVideoRequired() && homeworkDTO.getVideo() == null)
             throw new RuntimeException("Video file are required");
+    }
+
+    private void checkAllPrerequisitesCompleted(Task task, Student student) {
+        if (!studentService.checkStudentTaskPrerequisitesCompleted(student, task))
+            throw new RuntimeException("All prerequisites should be completed");
     }
 
     public Resource getHomeworkAudio(Long id) {

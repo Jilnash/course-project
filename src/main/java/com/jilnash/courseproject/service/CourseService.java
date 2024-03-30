@@ -125,10 +125,7 @@ public class CourseService {
 
             Task task = taskService.getTask(courseId, taskId);
 
-            List<Long> completedTasks = student.getCompletedTasks().stream().map(Task::getId).toList();
-            List<Long> prerequisites = task.getPrerequisites().stream().map(Task::getId).toList();
-
-            if (!completedTasks.containsAll(prerequisites))
+            if (!studentService.checkStudentTaskPrerequisitesCompleted(student, task))
                 throw new IncompletePrerequisitesException("You should complete all prerequisites first");
 
             return task;
