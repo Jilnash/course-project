@@ -1,5 +1,6 @@
 package com.jilnash.courseproject.model.education;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jilnash.courseproject.model.participants.Teacher;
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -33,6 +34,8 @@ public class Course {
 
     private String duration;
 
+    private Integer hwPostingDayInterval;
+
     @NotAudited
     @ManyToOne
     @JoinColumn
@@ -47,6 +50,7 @@ public class Course {
     )
     private List<Teacher> teachers;
 
+    @JsonIgnore
     @NotAudited
     @OneToMany(mappedBy = "course")
     private List<Task> tasks;

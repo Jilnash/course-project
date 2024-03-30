@@ -2,6 +2,7 @@ package com.jilnash.courseproject.dto.request.education;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -22,4 +23,8 @@ public class CourseDTO {
     @NotBlank(message = "Description must not be empty")
     @Size(min = 10, message = "Description must be at least 10 characters long")
     private String description;
+
+    @NotNull(message = "HwPostingDayInterval must not be null")
+    @Positive(message = "HwPostingDayInterval must be positive integer")
+    private Integer hwPostingDayInterval;
 }

@@ -60,14 +60,14 @@ public class HomeworkService {
         return homeworkRepo.findAll(spec);
     }
 
-    public Homework createHomework(HomeworkDTO homeworkDTO, String studentLogin) throws Exception {
+    public Homework createHomework(HomeworkDTO homeworkDTO, String studentLogin) {
 
         Student student = studentService.getStudent(studentLogin);
         Task task = taskService.getTask(homeworkDTO.getTaskId());
 
         checkNecessaryFilesProvided(homeworkDTO, task);
         checkTaskCompletion(homeworkDTO, student);
-        checkHomeworkPostingFrequency(homeworkDTO, student);
+        checkHomeworkPostingFrequency(homeworkDTO, student, task);
 
         Homework homework = new Homework();
         homework.setStudent(student);
@@ -119,14 +119,17 @@ public class HomeworkService {
             throw new TaskAlreadyCompletedException("Task already completed");
     }
 
-    private void checkHomeworkPostingFrequency(HomeworkDTO homeworkDTO, Student student) {
-        Date weekBefore = Date.valueOf(LocalDate.now().minusWeeks(1));
+    private void checkHomeworkPostingFrequency(HomeworkDTO homeworkDTO, Student student, Task task) {
+
+        int days = task.getCourse().getHwPostingDayInterval();
+        Date daysBefore = Date.valueOf(LocalDate.now().minusDays(days));
+
         if (!homeworkRepo.findAllByTaskIdAndStudentIdAndCreatedAtAfter(
                 homeworkDTO.getTaskId(),
                 student.getId(),
-                weekBefore
+                daysBefore
         ).isEmpty())
-            throw new HomeworkFrequentPostingException("Homework must be posted once a week");
+            throw new HomeworkFrequentPostingException("Homework must be posted once a " + days + " days");
     }
 
     private String generateLink(HomeworkDTO homeworkDTO, Student student, String fileType) {

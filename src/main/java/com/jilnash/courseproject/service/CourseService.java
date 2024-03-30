@@ -57,6 +57,7 @@ public class CourseService {
         course.setDescription(courseDTO.getDescription());
         course.setDuration(courseDTO.getDuration());
         course.setAuthor(teacherService.getTeacher(login));
+        course.setHwPostingDayInterval(courseDTO.getHwPostingDayInterval());
 
         return courseRepo.save(course);
     }
@@ -72,6 +73,7 @@ public class CourseService {
         course.setName(courseDTO.getName());
         course.setDescription(courseDTO.getDescription());
         course.setDuration(courseDTO.getDuration());
+        course.setHwPostingDayInterval(courseDTO.getHwPostingDayInterval());
 
         courseRepo.save(course);
         return true;
