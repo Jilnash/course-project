@@ -51,7 +51,7 @@ public class Task {
     @OneToMany(mappedBy = "task", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TaskAspectLevel> taskAspectLevels;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "task_prerequisites",
             joinColumns = @JoinColumn(name = "task_id"),

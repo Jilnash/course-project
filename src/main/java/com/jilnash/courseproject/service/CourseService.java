@@ -2,6 +2,9 @@ package com.jilnash.courseproject.service;
 
 import com.jilnash.courseproject.dto.request.education.CourseDTO;
 import com.jilnash.courseproject.dto.request.education.TaskDTO;
+import com.jilnash.courseproject.dto.response.tasks_graph.TaskGraphDTO;
+import com.jilnash.courseproject.dto.response.tasks_graph.TaskLinksDTO;
+import com.jilnash.courseproject.dto.response.tasks_graph.TaskNodeDTO;
 import com.jilnash.courseproject.exception.IncompletePrerequisitesException;
 import com.jilnash.courseproject.exception.NoTaskWIthNoPrerequisitesException;
 import com.jilnash.courseproject.exception.StudentCourseAccessException;
@@ -98,11 +101,26 @@ public class CourseService {
         return true;
     }
 
-    public List<Task> getCourseTasks(Long courseId) {
+    public TaskGraphDTO getCourseTasks(Long courseId) {
 
         Course course = getCourse(courseId);
+        List<Task> tasks = course.getTasks();
 
-        return course.getTasks();
+        TaskGraphDTO taskGraph = new TaskGraphDTO();
+
+        taskGraph.setNodes(tasks.stream().map(
+                task -> new TaskNodeDTO(task.getId(), task.getTitle())).toList()
+        );
+
+        taskGraph.setLinks(
+                tasks.stream().flatMap(
+                        task -> task.getPrerequisites().stream().map(
+                                prerequisite -> new TaskLinksDTO(prerequisite.getId(), task.getId())
+                        )
+                ).toList()
+        );
+
+        return taskGraph;
     }
 
     public Task getCourseTask(Long courseId, Long taskId, String username) {
