@@ -1,11 +1,11 @@
 package com.jilnash.courseproject.dto.request.education;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -27,4 +27,7 @@ public class CourseDTO {
     @NotNull(message = "HwPostingDayInterval must not be null")
     @Positive(message = "HwPostingDayInterval must be positive integer")
     private Integer hwPostingDayInterval;
+
+    @NotEmpty(message = "Aspects must not be empty")
+    private List<@Valid AspectDTO> aspects;
 }

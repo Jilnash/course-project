@@ -17,7 +17,7 @@ import java.util.List;
 
 @Getter
 @Setter
-@ToString(exclude = {"teachers", "tasks"})
+@ToString(exclude = {"teachers", "tasks", "aspects"})
 @Entity
 @Table(name = "course")
 @Audited
@@ -54,6 +54,10 @@ public class Course {
     @NotAudited
     @OneToMany(mappedBy = "course")
     private List<Task> tasks;
+
+    @NotAudited
+    @OneToMany(mappedBy = "course")
+    private List<Aspect> aspects;
 
     @NotAudited
     @Column(name = "created_at")

@@ -40,6 +40,9 @@ public class CourseService {
     private StudentService studentService;
 
     @Autowired
+    private AspectService aspectService;
+
+    @Autowired
     private StudentCourseAccessRepo studentCourseAccessRepo;
 
     public List<Course> getCourses() {
@@ -62,7 +65,10 @@ public class CourseService {
         course.setAuthor(teacherService.getTeacher(login));
         course.setHwPostingDayInterval(courseDTO.getHwPostingDayInterval());
 
-        return courseRepo.save(course);
+        Course savedCourse = courseRepo.save(course);
+        aspectService.createAspects(courseDTO.getAspects(), savedCourse);
+
+        return savedCourse;
     }
 
     public boolean updateCourse(Long id, CourseDTO courseDTO, String login) {
@@ -78,7 +84,7 @@ public class CourseService {
         course.setDuration(courseDTO.getDuration());
         course.setHwPostingDayInterval(courseDTO.getHwPostingDayInterval());
 
-        courseRepo.save(course);
+        aspectService.updateAspects(courseDTO.getAspects(), courseRepo.save(course));
         return true;
     }
 
