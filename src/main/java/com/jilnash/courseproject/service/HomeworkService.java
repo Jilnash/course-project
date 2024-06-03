@@ -155,7 +155,7 @@ public class HomeworkService {
 
         Homework homework = getHomework(id);
 
-        return s3Service.getFileFromS3(homework.getAudioLink());//todo: find type of the file
+        return s3Service.getFileFromS3(homework.getAudioLink());
     }
 
     public Homework getHomework(Long id) {
