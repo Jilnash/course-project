@@ -29,4 +29,8 @@ public class StudentDTO {
     @NotNull(message = "Skype cannot be null")
     @NotEmpty(message = "Skype cannot be empty")
     private String skype;
+
+    @NotNull(message = "User login cannot be null")
+    @NotEmpty(message = "User login cannot be empty")
+    private Long userLogin;
 }

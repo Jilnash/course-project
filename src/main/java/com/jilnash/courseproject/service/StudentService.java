@@ -23,6 +23,9 @@ public class StudentService {
     @Autowired
     private StudentCourseAccessRepo studentCourseAccessRepo;
 
+    @Autowired
+    private UserService userService;
+
     public List<Student> getStudents() {
         return studentRepo.findAll();
     }
@@ -51,6 +54,7 @@ public class StudentService {
         student.setName(studentDTO.getName());
         student.setSurname(studentDTO.getSurname());
         student.setSkype(studentDTO.getSkype());
+        student.setUser(userService.getUser(studentDTO.getUserLogin()));
 
         return studentRepo.save(student);
     }
