@@ -33,4 +33,8 @@ public class TeacherDTO {
     private String photo;
 
     private String mediaLink;
+
+    @NotNull(message = "User id is mandatory")
+    @NotBlank(message = "User id must not be empty")
+    private Long userId;
 }

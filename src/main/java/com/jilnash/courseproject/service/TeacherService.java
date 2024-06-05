@@ -15,6 +15,8 @@ public class TeacherService {
 
     @Autowired
     private TeacherRepo teacherRepo;
+    @Autowired
+    private UserService userService;
 
     public List<Teacher> getTeachers() {
         return teacherRepo.findAll();
@@ -43,6 +45,7 @@ public class TeacherService {
         teacher.setName(teacherDTO.getName());
         teacher.setSurname(teacherDTO.getSurname());
         teacher.setDescription(teacherDTO.getDescription());
+        teacher.setUser(userService.getUser(teacherDTO.getUserId()));
 
         if (teacherDTO.getPhoto() != null)
             teacher.setPhoto(teacherDTO.getPhoto());
